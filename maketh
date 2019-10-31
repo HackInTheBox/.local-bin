@@ -1,0 +1,53 @@
+#!/bin/bash
+#
+# CONTACTS              
+#_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+#+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_
+#
+
+userinput="$*"
+
+#
+# Check for proper syntax
+echo "$userinput"
+if [ -d "$userinput" ]; then
+#  echo "Performing actions on $userinput"
+  nullbyte=0
+else
+  echo "Error.  Provide a directory containing images as an argument"
+  echo "  Usage:  makeiso <path to directory>"
+  echo "     ie:  makeiso \"/home/adam/Desktop/original-images-directory\""
+  exit 1
+fi
+
+# _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+#+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_
+#
+
+# set timestamp variable
+timestamp() {
+echo "$(date +%H%M%S)"
+}
+
+FILE=$(dirname "$userinput")/thumb_list_$(basename "$userinput").txt
+if [ -f "$FILE" ]; then
+rm $FILE
+fi
+touch "$FILE"
+
+ls -1 "$userinput" | grep '\.jpg' | while read -r line; do
+pathname="$userinput"/"$line"
+echo "$pathname" >> "$FILE"
+done
+
+cs=$(dirname "$userinput")/contact_sheet_$(basename $(dirname "$userinput")).jpg
+
+montage -geometry 300x300+8+8 @"$FILE" "$cs"
+
+
+if [ $? -gt 0 ]; then
+read -p "Error Occurred! Contact sheet may have errors! Press <enter>.   "
+else
+echo "Contact sheet has been created as $cs"
+fi
+rm "$FILE"

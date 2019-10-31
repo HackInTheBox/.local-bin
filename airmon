@@ -1,0 +1,58 @@
+#!/bin/bash
+# startmon
+#
+#
+option="$*"
+
+statusrep() {
+echo Status Check:
+
+echo network-manager: $(sudo systemctl status network-manager | grep 'Active:')
+echo wpa_supplicant: $(sudo systemctl status wpa_supplicant | grep 'Active:')
+}
+
+startmon_script() {
+statusrep
+echo "Starting monitor..."
+sudo systemctl stop wpa_supplicant
+sudo systemctl stop network-manager
+sudo airmon-ng start wlan0 | grep 'mode'
+
+statusrep
+}
+
+
+stopmon_script() {
+statusrep
+echo "stopping monitor..."
+sudo systemctl start wpa_supplicant
+sudo systemctl start network-manager
+sudo airmon-ng stop wlan0mon | grep 'mode'
+statusrep
+}
+
+case $option in
+    start)
+        startmon_script
+        ;;
+    stop)
+        stopmon_script
+        ;;
+    *)
+        echo invalid option
+        exit 0
+        ;;
+esac
+
+exit 0
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,48 @@
+#!/bin/bash
+# getvideos
+
+convert_to_mov() {
+export converted_file=$(echo $output_file | sed 's/.mp4/.mov/g')
+avconvert -v -p PresetAppleM4V1080pHD -s ~/Desktop/network_plus/downloads/${output_file} -o ~/Desktop/network_plus/converted/${converted_file}
+}
+debug_file() {
+         echo $line
+         echo $newline 
+         echo $output_file
+         echo $converted_file
+         echo $input_file
+         echo $filename_prefix
+         echo $course_name
+      }
+
+getvideos_function() {
+   mkdir -p ~/Desktop/network_plus
+   mkdir -p ~/Desktop/network_plus/downloads
+   mkdir -p ~/Desktop/network_plus/converted
+   new_file_flag=FALSE
+   cat /Users/shawn_gollatz/Desktop/nework+videos | \
+   while read -r line; do
+#+++++++++++ define variables
+      newline=$(echo $line | sed 's/[ \t\n]*$)//g')
+      input_file=$(echo ${newline} | sed 's/.*\///g')
+      filename_prefix=$(echo $newline | sed -E 's/.*(output\/)//g ; s/(\/media).*//g')
+      course_name=$(echo $newline | sed -E 's/.*(\/cca\/cs_)//g ; s/(_it_enus.*)//g')
+      export output_file="${course_name}_${filename_prefix}_${input_file}"
+#++++++++++ find new additions and download them
+      if [ "${newline}" == "NEW_FILES_BELOW" ]; then
+         new_file_flag=TRUE
+      elif [ ${new_file_flag} == 'TRUE' ]; then
+         if [ ${output_file} == '__' ]; then
+            blank_line=TRUE
+         else
+            blank_line=FALSE
+            echo; echo "Downloading ${newline}"
+            echo "   and saving as ${output_file}"; echo
+            curl ${newline} -o ~/Desktop/network_plus/downloads/${output_file}
+            convert_to_mov
+         fi
+      fi
+      #debug_file
+   done
+}
+getvideos_function

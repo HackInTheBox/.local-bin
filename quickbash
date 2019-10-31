@@ -1,0 +1,51 @@
+#!/bin/bash
+
+me="$(echo $(users) | awk '{ print $1 }')"
+dest=/home/"$me"/.bash_aliases
+
+newbashsh(){
+if [ ! -f "$dest" ]; then
+    touch "$dest"
+    erck=$?
+    if [ ! $erck -eq 0 ]; then
+        echo "error $erck"
+        exit $erck
+    fi
+fi
+
+cnam=$(echo "alias $*" | awk -F\= '{ print $1 }')  
+funn=$(echo "alias $*" | awk -F\= '{ print $2 }')  
+
+glob=$(echo -E "$cnam"\=\'"$funn"\')
+echo; echo "$glob"; echo
+
+read -p "Press Y|n to accept the entry to $dest: " yesno
+
+    case $yesno in
+            y*|Y*)
+                    echo "$glob" >> "$dest"
+                    erck=$?
+                    if [ $erck -ne 0 ]; then 
+                        echo "error $erck writing command"
+                        exit $erck
+                    fi
+                    echo; echo "$glob"
+                    echo "was created.  Type 'exec bash' and 'alias -p' to view the new command"
+                    ;;
+            *)
+                    echo "Aborting..."
+                    exit 0
+                    ;;
+    esac
+}
+
+newbashsh $*
+exit 0
+
+
+#quickbashsh $*
+#exit 0
+
+
+
+

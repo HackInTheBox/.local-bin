@@ -1,0 +1,141 @@
+#!/bin/bash
+#
+# apt-backup
+#
+# Pulls a list of manually installed packages currently installed
+# Pulls the list of current sources AND/OR makes a .gzip file of /etc/apt/{everything}
+#
+# Stores it in user's "local" directory tree
+#
+# /home/
+#   |_$USER/
+#          |_local/
+#              |_bin/
+#              |   |_drafts/
+#              |   |_tests/
+#              |_etc/
+#              |_var/
+#              |   |_backups/
+#              |   |_log/
+#              |       |_apt/   <---------- stored here
+#              |       |_rsync/
+#              |       |_gparted/
+#              |_share/
+#              |_tmp/
+#              |_lib/
+#
+#
+blue() { echo -en \033[36m; }
+red() { echo -en \033[31m; }
+white() { echo -en \033[00m; }
+
+home="/home"
+local="/local"
+path="/var/log/apt"
+moddate=$(date +%F_%H:%M.%S)
+machineName='('$(hostname -s)')'
+file="${machineName}_manually-installed_${moddate}.txt"
+
+#echo $file
+#exit 0
+sourcepath="/etc/apt/sources.list"
+ppasources="/etc/apt/sources.list.d"
+
+if [ $(hostname) = "bluehat" ]; then
+        user="/yarn"
+    elif [ $(hostname) = "swift" ]; then
+        user="/shawn"
+    elif [ $(hostname) = "iMac11" ]; then
+        user="/shawn_gollatz"
+        home="/Users"
+        echo "Hostname is iMac11.  Aptitude package management doesnt apply.  exiting."
+        exit 0
+    elif [ $(hostname) = "tgn-server" ]; then 
+        user="/shawn"
+fi
+
+
+fullpath_to_backup="$home$user$local$path/$file"
+
+mkdir -p $home$user$local
+mkdir -p $home$user$local/var
+mkdir -p $home$user$local/var/log
+mkdir -p $home$user$local/var/log/apt
+
+file_prep() {
+touch "$fullpath_to_backup"
+tabs -7
+echo -e "############################################################################\n#"
+echo -e "# FULL SYSTEM INSTALLED-PACKAGE LISTING\n# [manually installed only]\n#"
+echo -e "# **************************************************************************\n#"
+echo -e "#\tGenerated:\t${moddate}"
+echo -e "#\tUser:\t\t$(users)"
+echo -e "#\tSystem:\t$(uname -s)\n#\t\t\t$(uname -n)\n#\t\t\t$(uname -r)\n#\t\t\t$(uname -v)"
+echo -e "#\t\t\t$(uname -m)\n#\t\t\t$(uname -o)\n#\n#"
+}
+
+execute_sourcelist() {
+if [ -f "$sourcepath" ]; then
+   echo -e "# **************************************************************************\n#"
+   echo -e "# sources from ${sourcepath}\n#\t"
+   cat "$sourcepath" | while read -r line; do
+      if [ "$line" == "" ] || [ $(echo "$line" | head -c 1) == "#" ]; then
+         skip_this_line=true
+      else
+         echo -e "\t${line}"
+      fi
+      if [ "$line" == "$(cat $sourcepath | tail -n 1)" ]; then
+         reached_end_of_file=true
+         echo -e "\t<Reached end of file>\n"
+      fi
+   done
+fi
+}
+
+
+execute_manuals() {
+    echo -e "# **************************************************************************\n#"
+    echo -e "# Manually Installed Packages\n#"
+    /usr/bin/apt-mark showmanual
+    echo -e "\n\n<reached end of file>\n"
+}
+
+execute_ppa() {
+    if [ -d "$ppasources" ]; then
+       echo -e "# **************************************************************************\n#"
+       echo -e "# sources listed in ${ppasources}\n#"
+       if [ ! $(ls -1p "$ppasources" | grep -v '\/') ]; then
+            echo -e "#\tdirectory exists, but is empty\n#"
+       else
+            ls -1p "$ppasources" | grep -v '\/' | while read line; do
+            echo -e "\t$line"
+            done
+       fi
+    echo -e "\t<Reached end of file>\n"
+    fi
+}
+
+teemaster() {
+   file_prep
+   execute_sourcelist
+   execute_ppa
+   execute_manuals
+}
+
+teemaster | tee "$fullpath_to_backup"
+
+exit 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+

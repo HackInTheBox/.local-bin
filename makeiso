@@ -1,0 +1,153 @@
+#!/bin/bash
+#
+#                                    _        ___ ____   ___  
+#                    _ __ ___   __ _| | _____|_ _/ ___| / _ \ 
+#                   | '_ ` _ \ / _` | |/ / _ \| |\___ \| | | |
+#                   | | | | | | (_| |   <  __/| | ___) | |_| |
+#                   |_| |_| |_|\__,_|_|\_\___|___|____/ \___/ 
+#                                                             
+#_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+#+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_
+#
+#
+# Check for proper syntax
+if [ -d "$1" ]; then
+#  echo "Performing actions on $1"
+  nullbyte=0
+else
+  echo "Error.  Provide a directory containing images as an argument"
+  echo "  Usage:  makeiso <path to directory>"
+  echo "     ie:  makeiso \"/home/adam/Desktop/original-images-directory\""
+  exit 1
+fi
+#_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+#+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_
+# 
+hash figlet >&/dev/null
+if [ $? -eq 0 ]; then
+   fl=true
+   figlet -c makeISO | sed 's/^./#\ /g'
+else
+  echo " install figlet for awesome ascii art!"
+  echo ""
+  echo " type 'apt install figlet' on linux"
+  echo "      -or- "
+  echo " type 'brew install figlet' for mac."
+ fi
+#
+# set timestamp variable
+timestamp() {
+echo "$(date +%H%M%S)"
+}
+#
+# define some variables
+#full path of source
+
+   a="$1"
+
+#shortname of source
+   b="$(basename $a)"
+
+#full path of source of source (parent full)
+   c="$(dirname $a)"
+
+#short name of new archive folder
+   s="$b"_archive
+
+#full pathname of new archive folder
+   n="$c"/"$s"
+
+#short name of thumbnail directory
+   t="$b"_thumbnails_"$(timestamp)"
+
+#full pathname of thumbnail directory
+   y="$n"/"$t"
+
+#full path to thumbnail list
+   FILE="$n/thumblist.txt"
+
+mkdir -p "$n"
+#mkdir -p "$y"
+
+#
+#echo "$a copy  "
+#echo "$b basename  "
+#echo "$c dirname  "
+#echo "$s short new "
+#echo "$n full new  "
+#echo "$t short thumb  "
+#echo "$y full thumb  "
+#echo "$FILE full thumblist "
+#
+#_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+#+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_
+#
+# Store the images as a ISO file, then store the MD5 checksum in the same folder
+
+
+echo "Creating disk image ..."
+  hdiutil makehybrid -verbose -o "$n"/"$b".iso "$a"
+
+#.....create checksum if successful
+
+if [ $? -eq 0 ]; then
+  echo "Completing checksum......."
+  cksm="$n"/checksum_"$b".txt
+  echo "$b.iso" > "$cksm"
+  echo "" >> "$cksm"
+  hdiutil checksum -type MD5 "$n/$b.iso" >> "$cksm" 
+  erck="$?"
+  printf "Executed on " >> "$cksm"
+  echo "$(date)" >> "$cksm"
+  
+  #report if checksum successful
+  if [ "$erck" -eq 0 ]; then
+     echo "Checksum complete. $cksm"
+  else
+     #report error on checksum
+     echo "Error Encountered during checksum. Check System Logs"
+     echo "Error code $erck on file $n/$b.iso."
+     echo "Output may be found in $cksm"
+  fi
+else
+  #report error on disk image and abort checksum
+  echo "Error completing .iso image from $a"
+  echo "Attempted to create file $n/$b.iso"
+  echo "Please check sytem logs.  Aborting Checksum...."
+fi
+
+
+#_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+#+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_
+#
+# remove the thumbnails
+#read -p "Remove the directory of thumbnails? Yes/No    :" x
+#case $x in 
+#	"n")
+#	    echo "\(no\)..n...Skipping deletion"
+#;;
+#	"no")
+#	    echo "\(no\)...Skipping deletion"
+#;;
+#	"yes")
+#	    echo "\(yes\)... Deleting files..."
+#	    #rm -r -i -v "$y"
+#;;
+#	"y")
+#	    echo "\(y\)... Deleting files..."
+#	    #rm -r -i -v "$y"
+#;;
+#	*)
+#	    echo "No valid input detected.  Deleting all root directories..."
+#	    sleep 2
+#	    echo "Just Kidding.!"; echo ""; echo ""; echo "";
+#;;
+#esac
+#_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+#+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_
+#
+# removing source originals will be left to the user to complete manually.
+echo "Operation Complete."
+echo "Removing source originals will be left to the user to complete manually."
+#read -p "Press <enter> to continue"
+

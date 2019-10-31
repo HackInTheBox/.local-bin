@@ -1,0 +1,17 @@
+#!/bin/bash
+#'CHANGE SWAPPINESS TO 10 BY ADDING A CONFIG FILE TO SYSTCTL.D'
+# Get password out of the way at the start
+sudo echo "Current Swappiness is" && cat /proc/sys/vm/swappiness
+read -p  "Enter a value for new swapiness ...10 is a good place to start: " swappinn
+#'EXECUTE THE CONFIGURATION FILE CREATION !!!!! REBOOTS!'
+# 'Create a temporary container with configuration value'
+cd ~ && sudo echo "vm.swappiness=${swappinn}" > tempconfig
+# 'Clone it to the right name and location and delete the temp file'
+sudo cp tempconfig /etc/sysctl.d/swapfile.conf && rm tempconfig
+# 'Set current system to desired setting'
+sudo sysctl vm.swappiness=${swappinn}
+# 'Print bacl to user'
+echo "Operation complete. System Memory Swappiness is" && cat /proc/sys/vm/swappiness
+echo "New configuration file created at /etc/sysctl.d/swapfile.conf"
+read -p "Changes are now in effect and will be persistent.  Press <enter> to exit."
+# 'CHANGE SWAPPINESS TO 10 BY ADDING A CONFIG FILE TO SYSTCTL.D'

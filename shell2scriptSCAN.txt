@@ -1,0 +1,68 @@
+read inputglob
+
+xdn='1971-1973_'
+xdf="Desktop"
+xaf="automator_output"
+xsf="scanner_output"
+xof="originals"
+xcf="copies"
+xtf="thumbnails"
+
+timestamp() { date -u +%m%d-%H%M%S; }
+xpd="$HOME"/"$xdf"
+xpa="$xpd"/"$xaf"
+xps="$xpd"/"$xsf"
+xpo="$xpa"/"$xof"
+xpc="$xpa"/"$xcf"
+xpt="$xpa"/"$xtf"
+
+mkdir -p "$xps" "$xpa" "$xpo" "$xpc" "$xpt"
+
+echo "$inputglob"
+echo "$inputglob" | while read line; do
+
+   xfe=$(echo $line | sed -E 's/^.*\.//g')
+   xin="$line"
+   xnn=$(timestamp)
+   xre="$xps"/"$xdn$xnn"."$xfe"
+   
+   #rename
+   mv "$xin" "$xre"
+
+   #convert to workable size & move to 'copies'
+   /usr/local/Cellar/imagemagick/7.0.8-50/bin/convert "$xre" -auto-level -wavelet-denoise 1.5% -enhance -resize 80% - compress JPEG2000 -quality 95 "$xpc"/resized_"$xdn$xnn".jpg
+
+   #make thumbnail & move to 'thumbs'
+   /usr/local/Cellar/imagemagick/7.0.8-50/bin/convert "$xre" -thumbnail 500x500 "$xpt"/thumb_"$xdn$xnn".jpg
+
+   #move to 'originals'
+   cp "$xre" "$xpo"/"$xdn$xnn"."$xfe"
+
+   #remove scanoutput
+   rm "$xre"
+
+   #alert job is finished
+d="$xpo"
+e="$(ls -f "$d" | grep '.png' | wc -l)"
+g=$( expr $e % 4 )
+case $g in 
+1)
+afplay ~/sb/m1.caf
+;;
+2)
+afplay ~/sb/m2.caf
+;;
+3)
+afplay ~/sb/m3.caf
+;;
+0)
+afplay ~/sb/m4.caf
+;;
+*)
+say "beep"
+;;
+esac
+
+
+done
+

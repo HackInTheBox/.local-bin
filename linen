@@ -1,0 +1,67 @@
+#!/bin/bash
+#linen
+#alias linenumber linee linenn
+#pull a single line from a file and return to standard output
+#syntax $ linen <line number> <file>
+
+num="$1"
+fil=''
+all="$*"
+words=0
+
+#see if parallel is installed and exit 1 if not
+hash parallel
+if [ $? -eq 0 ]; then
+parallel_is_installed=true
+else
+echo "Install parallel to continue"
+read -p "Press <Enter> to install or CTRL+C to cancel"
+sudo apt install parallel
+exit 1
+fi
+
+
+#Check to see if both arguments were included
+if [ "$2" ]; then 
+includesboth=true
+else 
+echo "syntax:\$ linen <line number> <file>"
+exit 1
+fi
+
+
+#Verify that second argument is a valid file
+if [ -f "$2" ]; then
+#words=$(parallel --pipe wc -l "$2" | awk '{ print $1 }')
+words="$1"
+fil="$2"
+echo "There are $words lines in $fil"
+else
+echo "$2 is not a valid file.  Check syntax or script.  Exiting."
+exit 1
+fi
+
+#get word count of provide file name
+if [ $words -gt 0 ] && [ $words -lt 1299999999 ]; then
+file_word_count_is_valid=true
+else
+echo "file is empty or is too large"
+exit 1
+fi
+
+#see if requested line number is valid
+if [ $num -gt 0 ] && [ $num -le $words ]; then
+requested_line_is_valid=true
+else
+echo "Requested line number is invalid"
+exit 1
+fi
+
+#echo "Line number $num in $fil is 
+
+result=$(head -n $num $fil | tail -n 1)
+echo "Line number $num in $fil is"
+echo "$result"
+
+exit 0
+

@@ -1,0 +1,13 @@
+#!/bin/bash
+function fytdl() {
+mkdir -p ~/Downloads/youtube-dl
+spdir=$(date +"%H%M%S")
+mkdir -p ~/Downloads/youtube-dl/$spdir
+echo "YouTube-DL... syntax $ ytdl http://www.yourvideo.com/path/entered/here.html"
+echo "options -c, -i, and -format=best enabled."
+echo "Saving video to $HOME/Downloads/youtube-dl/$spdir"
+echo "Downloading video from $1"
+echo "Press ctrl+c to interrupt"
+youtube-dl -ci -f best $1 -o "$HOME/Downloads/youtube-dl/$spdir/%(title)s-%(id)s.%(ext)s"
+}
+fytdl "$1"

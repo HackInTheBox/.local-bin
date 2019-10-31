@@ -1,0 +1,6 @@
+#!/bin/bash
+
+read -p 'Press Enter to start Geekbench testing.  Please make sure uneccessary programs are closed and the internet connection is on."
+cd /home/shawn/scripts/gbench
+source '/home/shawn/scripts/gbench/geekbench4'
+read -p 'Operation complete.  Press Enter to continue."

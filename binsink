@@ -1,0 +1,46 @@
+#!/bin/bash
+# binsink
+arg="$1"
+hostn=$(hostname); 
+me="$(echo $(users) | awk '{ print $1 }')"
+platform=$(uname -s)
+case "$platform" in
+   "Linux")
+       homepath="/home/$me"
+       rootpath='/root'
+  ;;
+   "Darwin")
+       homepath="/Users/$me"
+       rootpath='/var/root'
+  ;;
+   *)
+       homepath=$HOME
+       if [ -d /root ]; then
+          rootpath=/root
+       else
+          rootpath=$HOME
+       fi
+  ;;
+esac
+
+
+binsi() {
+if [ ! "$arg" ]; then
+   echo "Please specify a target to copy and sync ~local/bin to"
+   echo "Enter command ssh-list for a list of configured hosts"
+else
+echo rootpath $rootpath
+echo me $me
+echo platform $platform
+echo hostn $hostn
+echo arg $arg
+echo 1 $1
+echo homepath $homepath
+   #rsync -phirv -e ssh --progress $homepath/local/bin/ $arg:~/local/bin
+   rsync -v -e ssh --exclude=.bash_history $homepath/.* $arg:~/test/
+fi
+}
+
+binsi $1
+
+exit 0

@@ -1,0 +1,6 @@
+#!/bin/bash
+function endbshf() { 
+read -p "Operation complete.  Press ENTER to exit."
+echo Have a nice day; sleep 3s
+}
+endbshf

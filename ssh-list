@@ -1,0 +1,66 @@
+#!/bin/bash
+
+#ssh-list
+#parses available hostnamenames from user's home directory ~/.ssh/config file
+
+sshf='.ssh'
+conf='config'
+srcp=$HOME
+fpth="$HOME/$sshf/$conf"
+
+
+cat "$fpth" | { 
+
+while read line; do
+
+   field=$(echo "$line" | awk '{ print $1 }')
+   value=$(echo "$line" | awk '{ print $2 }')
+
+   if [ "$field" ] && [ "$value" ]; then
+      case $field in
+          Hostn*|HostN*|hostn*)
+            hostname="$value"
+            newentry=1
+            ;;
+          User|user)
+            user="$value"
+            newentry=1
+            ;;
+          Host|host)
+            newentry=0
+            if [ "$host" ] 2>/dev/null
+            then
+               entry=$entry"\033[96m"$host"\033[00m":"\033[33m"$user"\033[36m"@"\033[92m"$hostname
+               #echo -en "\033[36m Success. \033[00m Exit code is a Success."
+               (( hostcount++ ))
+               if [ $( expr $hostcount % 2 ) -eq 0 ]; then
+                  entry=$entry"\n"
+               else
+                  entry=$entry"\t"
+               fi
+            fi
+            host="$value"
+            ;;
+          *)
+            error=1
+            newentry=1
+               miscdata="${miscdata}${line}, "
+            ;;
+       esac
+   fi
+done
+echo
+tabs -40
+echo -e $entry 
+#| while read line; do echo -e "$line" | column -t; done
+#echo "$miscdata" | column -c 2
+}
+
+
+#final iteration which would have gotten 'lost'
+#           echo -e "\t $host \t $user@$hostname"
+
+
+
+
+exit 0

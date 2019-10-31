@@ -1,0 +1,69 @@
+#!/bin/bash
+#login and play billions
+
+player=$(hostname -s)
+case $player in
+   "swift")
+      #Use linux-based commands for acer laptop
+      version=linux
+      user=shawn
+      home='/home'
+   ;;
+   "bluehat")
+      #Default to linux-based commands
+      version=linux
+      user=yarn
+      home='/home'
+   ;;
+   "tgn-server")
+      #Default to linux-based commands
+      version=linux
+      user=shawn
+      home='/home'
+   ;;
+   "iMac11")
+      #Default to linux-based commands
+      version=linux
+      user=shawn_gollatz
+      home='/Users'
+   ;;
+   *)
+      #Default to linux-based commands
+      version=linux
+      user="$USER"
+      home="/$(echo "$HOME" | awk -F\/ '{ print $2 }')"
+   ;;
+esac
+
+#echo "You are $player"
+#echo "Your home directory is $home"
+#echo "Your user name is $user"
+#echo "And your desktop is found at $home/$user/Desktop"
+
+
+if [ "$player" == "iMac11" ]; then
+afplay /Users/shawn_gollatz/sb/tr2.mp3&
+else
+echo "not a mac"
+fi
+
+exit 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

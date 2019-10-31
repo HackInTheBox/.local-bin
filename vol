@@ -1,0 +1,30 @@
+#!/bin/bash
+#vol
+#designed to set the volume of system remotely from ssh
+#
+# And to annoy family
+#
+#
+#If an argument is provided and it's NOT "-q", then
+if [ "$1" != '-q' ] && [ "$1" != '' ]; then
+    inp="$1"
+    sudo /usr/bin/osascript -e "set Volume $inp"
+    echo "Volume has been set to $inp"
+    sudo say "Volume has been set to $inp" 
+  elif [ "$1" == '' ]; then
+      echo "Error. Enter a value 1-10 or -q for quiet mode"
+      echo "Example:  vm -q 8"
+      echo "Example:  vm 3"
+  elif [ "$2" ]; then
+      inp="$2"
+      sudo /usr/bin/osascript -e "set Volume $inp"
+      echo "<Quiet mode>"
+      echo "Volume has been set to $inp"
+  else
+      echo "Some error occured"
+      exit 1 
+fi
+exit 0
+
+# scp ~/local/bin/vol ace.251:/home/shawn/local/bin/vol
+# scp ace.251:/home/shawn/local/bin/vol ~/local/bin/vol 

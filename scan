@@ -1,0 +1,54 @@
+#!/bin/bash
+
+xdn='1971-1973_'
+xdf="Desktop"
+xaf="automator_output"
+xsf="scanner_output"
+xof="originals"
+xcf="copies"
+xtf="thumbnails"
+
+timestamp() { date -u +%m%d-%H%M%S; }
+xpd="$HOME"/"$xdf"
+xpa="$xpd"/"$xaf"
+xps="$xpd"/"$xsf"
+xpo="$xpa"/"$xof"
+xpc="$xpa"/"$xcf"
+xpt="$xpa"/"$xtf"
+
+mkdir -p "$xps" "$xpa" "$xpo" "$xpc" "$xpt"
+
+
+ls -1 "$xps" | sort -u | grep '.png' | while read line; do
+
+#file extension "png"
+  xfe=$(echo $line | sed -E 's/^.*\.//g')
+
+# $HOME/Desktop/scanner_output/filename.png
+  xin="$xps"/"$line"
+
+# 0707-120000
+  xnn=$(timestamp)
+
+# $HOME/Desktop/scanner_output/1981-1973_0705-1200000.png
+  xre="$xps"/"$xdn$xnn"."$xfe"
+ 
+  #rename
+  mv "$xin" "$xre"
+    afplay ~/sb/m1.caf
+
+  #convert to workable size & move to 'copies'
+  convert "$xre" -auto-level -wavelet-denoise 1.5% -enhance -resize 80% - compress JPEG2000 -quality 95 "$xpc"/resized_"$xdn$xnn".jpg
+    afplay ~/sb/m2.caf
+
+  #make thumbnail & move to 'thumbs'
+  convert "$xre" -thumbnail 500x500 "$xpt"/thumb_"$xdn$xnn".jpg
+    afplay ~/sb/m3.caf
+ 
+  #move to 'originals' ----backup
+  mv "$xre" "$HOME"/Desktop/backup/"$line"
+    afplay ~/sb/m4.caf
+   
+done
+
+exit 0

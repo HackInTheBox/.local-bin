@@ -1,0 +1,35 @@
+#!/bin/bash
+# CONVERT ALL TXT FILE EXTENSION FILES TO NO EXTENSION
+# Experimental! Backs up the working directory
+function backtxt() {
+PW="$(pwd)"
+echo $PW
+BN="$(basename $(pwd))"
+echo $BN
+cd ..
+pwd
+cp -R $BN .$BN-backup
+cd $PW
+}
+# This function makes a copy
+function copytxt() {
+ls -1A | while read line; 
+do cp -v $line "$(echo $line | sed 's/\.txt//g')"; 
+done
+}
+# This function removes the originals
+function deltxt() {
+ls -A | while read NEST; 
+  do 
+    if [ "$(echo $NEST | sed 's/\.txt//g')" == "$NEST" ]
+    then NUL=0
+    else rm -v $NEST
+    fi
+  done
+}
+# Invokes the above functions
+backtxt
+copytxt
+deltxt
+reset
+ls -lA

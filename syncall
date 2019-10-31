@@ -1,0 +1,16 @@
+#!/bin/bash
+# root filesystem backup excluding only required folders.
+pkexec rsync -r -t -p -o -g -v --progress --delete -l -H -D --partial -s --fuzzy --exclude=/media --exclude=/proc --exclude=/sys --exclude=/run/user --exclude=/tmp --exclude=/dev --exclude=/mnt --exclude=/cdrom --exclude=*cache* --log-file=/media/shawn/1378d979-bda1-4eb8-aefd-b9f067bc7197/var/log/rsync/last-transfer-log.txt / /media/shawn/1378d979-bda1-4eb8-aefd-b9f067bc7197
+exit 0
+
+--fuzzy
+--exclude=/media
+--exclude=/proc
+--exclude=/sys
+--exclude=/run/user
+--exclude=/tmp
+--exclude=/dev
+--exclude=/mnt
+--exclude=/cdrom
+--exclude=*cache*
+--log-file='/media/shawn/1378d979-bda1-4eb8-aefd-b9f067bc7197/var/log/rsync/last-transfer-log.txt'

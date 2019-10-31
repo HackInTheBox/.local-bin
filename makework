@@ -1,0 +1,66 @@
+userinput="$*"
+
+ls -1 "$userinput" | grep 'png' | while read theline; do
+
+line="$userinput"/"$theline"
+
+echo "$line"
+#====================
+
+if [ -f "$line" ]; then
+  sleep 1
+
+  fillenvironment() { mkdir -p "$varpif" "$varout" "$varpof" "$varpcf" "$varptf" "$varptt"; }
+  timestamp() { date -u +%m%d-%H%M%S; }
+
+    cnstdn='1981-1982_'
+    cnstdf='Desktop'
+    cnstif='convert_input'
+    cnstof='auto_convert'
+    cnstor='originals'
+    cnstcf='copies'
+    cnsttf='thumbnails'
+    cnstmp='.temporary'
+
+    varbas="$HOME"/"$cnstdf"
+    varpif="$varbas"/"$cnstif"
+    varout="$varbas"/"$cnstof"
+    varptf="$varout"/"$cnsttf"
+    varpof="$varout"/"$cnstor"
+    varpcf="$varout"/"$cnstcf"
+    varptt="$varout"/"$cnstmp"
+
+  vartime=$(timestamp)
+  varextension=$(echo $line | sed -E 's/^.*\.//g')
+
+     temporarfile="$varptt"/tmpfile_"$cnstdn$vartime"."$varextension"
+     copiesoutput="$varpcf"/resized_"$cnstdn$vartime".jpg
+     thumbsoutput="$varptf"/thumbnl_"$cnstdn$vartime".jpg
+     originaltput="$varpof"/originl_"$cnstdn$vartime"."$varextension"
+
+  fillenvironment
+
+     #echo $line
+     echo $copiesoutput
+     echo $thumbsoutput
+     echo $originaltput
+     echo $temporarfile
+
+  #move input to temp location
+  mv "$line" "$temporarfile"
+
+  #convert to workable size & move to 'copies'
+  /usr/local/Cellar/imagemagick/7.0.8-50/bin/convert "$temporarfile" -auto-level -wavelet-denoise 1.5% -enhance -resize 80% -compress JPEG2000 -quality 95 "$copiesoutput"
+
+  #make thumbnail & move to 'thumbs'
+#  /usr/local/Cellar/imagemagick/7.0.8-50/bin/convert "$temporarfile" -thumbnail 500x500 "$thumbsoutput"
+
+  #move to 'originals'
+  mv "$temporarfile" "$originaltput"
+
+fi
+
+#=====================
+done
+
+

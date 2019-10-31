@@ -1,0 +1,16 @@
+#!/bin/bash
+updategit() {
+ls -1p $HOME/git | grep '\/' | sed 's/\///g' | while read line
+do
+echo "Attempting to update $line ...."
+cd $HOME/git/"$line" && git pull
+if [ $? -eq 0 ];
+then
+echo Update Successful; echo
+else
+echo Possible Configuration Error. ; echo 
+fi
+done
+}
+updategit
+

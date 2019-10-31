@@ -1,0 +1,54 @@
+#!/bin/bash
+#macc
+#return current mac addresses of internet interfaces then
+#  change them to a random address from the same manufacturer
+
+echo 'Current mac-address assigned physical interfaces:'
+#macdump() { 
+#######################################
+
+ifexists() {
+hash $1
+if [ $? == 0 ]; then
+  echo $1 installed
+  else
+  echo Error. Please install $1 and retry
+  exit 1
+  fi
+}
+
+ifexists figlet
+ifexists macchanger
+ifexists lkjslsss
+
+
+a=0
+b=$(ifconfig)
+t="/home/shawn/local/tmp/macc-tmp.txt"
+$null>"$t"
+printlist() {
+echo "$b" | grep 'ether' | awk '{ print $2 }' | while read macadr;
+do
+ifadr=$(echo "$b" | grep -B 6 "$macadr" | grep 'flags' | awk '{ print $1 }' | sed 's/://g')
+echo -e "$ifadr\t $macadr" | tee -a "$t"
+done
+}
+#}
+#######################################
+figlet "start:"
+printlist
+figlet "authorizing"
+sudo echo ""
+figlet "spoofing..."
+cat $t | while read line; do
+ifa="$( echo $line | awk '{ print $1 }' )"
+echo ""; echo "Interface:    $ifa"
+sudo ifconfig "$ifa" down
+sudo macchanger -e "$ifa"
+sudo ifconfig "$ifa" up
+done
+figlet "currently:"
+b=$(ifconfig)
+printlist
+figlet "MacChanged!"
+exit 0

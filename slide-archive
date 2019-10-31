@@ -1,0 +1,152 @@
+#!/bin/bash
+#slide-archive
+
+# make an archive from the original scans of the slide project in this file structure
+
+#I) VOL-1
+#	A) original_scans
+#		1) file.png
+#		2) file.png
+#		3) file.png...
+#	B) ISO_backup
+#		1) original_scans.iso
+#			a) file.png
+#			b) file.png
+#			c) file.png
+#		2) contact_sheet.jpg
+#		3) MD5_sums.txt
+#			a) iso.md5
+#			b) file.png.md5
+#			c) file.png.md5...
+#II) VOL-2
+#	A) original_scans
+#		1) file.png
+#		2) file.png
+#		3) file.png...
+#	B) ISO_backup
+#		1) original_scans.iso
+#			a) file.png
+#			b) file.png
+#			c) file.png
+#		2) contact_sheet.jpg
+#		3) MD5_sums.txt
+#			a) iso.md5
+#			b) file.png.md5
+#			c) file.png.md5...
+#
+# ************
+# syntax:
+# slide-archive [folder containing orginal scans] [title of scans]
+
+
+# Check for proper syntax
+if [ -d "$1" ]; then
+#  echo "Performing actions on $1"
+  nullbyte=0
+else
+  echo "Error.  Provide a directory containing images as an argument"
+  echo "  Usage:  slide-archive <path to directory> <title-of-project>"
+  echo "     ie:  slide-archive \"/home/shawn/Desktop/original-images-directory\" VOL-6_1989"
+  exit 1
+fi
+
+if [ "$2" == "" ]; then
+  echo "Error.  Provide a directory containing images as an argument"
+  echo "  Usage:  slide-archive <path to directory> <title-of-project>"
+  echo "     ie:  slide-archive \"/home/shawn/Desktop/original-images-directory\" VOL-6_1989"
+  exit 1
+fi
+
+
+
+#_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+#+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_
+# 
+hash figlet >&/dev/null
+if [ $? -eq 0 ]; then
+   fl=true
+   figlet -c slide-archive | sed 's/^./#\ /g'
+else
+  echo " install figlet for awesome ascii art!"
+  echo ""
+  echo " type 'apt install figlet' on linux"
+  echo "      -or- "
+  echo " type 'brew install figlet' for mac."
+ fi
+#
+# set timestamp variable
+timestamp() {
+echo "$(date +%H%M%S)"
+}
+#
+# define some variables
+#full path of source
+
+   a="$1"
+   aname="$2"
+
+#shortname of source
+   b="$(basename $a)"
+
+#full path of source of source (parent full)
+   c="$(dirname $a)"
+
+#short name of new archive folder
+   s="${b}${aname}"
+
+#full pathname of new archive folder
+   n="$c"/"$s"
+
+#short name of thumbnail directory
+#   t="$b"_thumbnails_"$(timestamp)"
+
+#full pathname of thumbnail directory
+#   y="$n"/"$t"
+
+#full path to thumbnail list
+#   FILE="$n/thumblist.txt"
+
+mkdir -p "$n"
+#mkdir -p "$y"
+
+# Store the images as a ISO file, then store the MD5 checksum in the same folder
+
+
+echo "Creating disk image ..."
+  hdiutil makehybrid -verbose -o "$n"/"$b".iso "$a"
+
+#.....create checksum if successful
+
+if [ $? -eq 0 ]; then
+  echo "Completing checksum......."
+  cksm="$n"/checksum_"$b".txt
+  echo "$b.iso" > "$cksm"
+  hdiutil checksum -type MD5 "$n/$b.iso" >> "$cksm" 
+  erck="$?"
+  echo "" >> "$cksm"
+  cd "$a"
+    ls -1F | grep -v '/' | while read -r line; do
+      md5 "$line" | tee -a "$cksm"
+    done
+  printf "Executed on " >> "$cksm"
+  echo "$(date)" >> "$cksm"
+  
+  #report if checksum successful
+  if [ "$erck" -eq 0 ]; then
+     echo "Checksum complete. $cksm"
+  else
+     #report error on checksum
+     echo "Error Encountered during checksum. Check System Logs"
+     echo "Error code $lrck on file $n/$b.iso."
+     echo "Output may be found in $cksm" 
+  fi
+else
+  #report error on disk image and abort checksum
+  echo "Error completing .iso image from $a"
+  echo "Attempted to create file $n/$b.iso"
+  echo "Please check sytem logs.  Aborting Checksum...."
+fi
+
+
+#montage -geometry 300x300 -label "%f" "$a"/* "$n"/"$aname".jpg
+#montage -geometry 300x300 -label "%f" 

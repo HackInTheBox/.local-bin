@@ -1,0 +1,25 @@
+#!/bin/bash
+#checknet
+#run in background and check internet
+
+blue='echo -en \033[36m'
+red='echo -en \033[31m'
+ipad=63.245.208.212
+
+ting() { ping -c 3 -i 2 "$ipad"; }
+
+until [ $duh ]; do
+($red)
+date
+($blue)
+echo "PING $ipad"
+ting
+if [ $? -ne 0 ]; then
+echo `date +%F%T` >> ~/local/var/checknet_logfile
+echo \e "\nnet is down\n------\n" >> ~/local/var/checknet_logfile
+notify-send --urgency=low "Wide Area Network Ping Failed."
+sleep 5
+else sleep 5
+fi
+done
+

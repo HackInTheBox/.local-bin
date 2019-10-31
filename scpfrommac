@@ -1,0 +1,5 @@
+#!/bin/bash
+securefrommac() {
+scp -r -i "~/.ssh/id_rsa_sorg" 'shawn_gollatz@192.168.1.150:"$1"' "$2"
+}
+securefrommac $2 $1

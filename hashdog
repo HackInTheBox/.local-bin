@@ -1,0 +1,91 @@
+#!/bin/bash
+
+
+# Original line that "works?"
+# hashcat -m 16800 /Users/shawn_gollatz/yarn/p6/home/yarn/hs/pmkid_ALLYOURBASEAREBELONGTOUS2_B4-75-0E-67-B0-37_2019-07-18T13-05-25.16800 -O --self-test-disable -s 35000000 /Users/shawn_gollatz/yarn/words/hackinthebox-words.txt 
+
+
+input='/Users/shawn_gollatz/local/bin/hashdog.d/hashdog'
+input_new="$input"_"$(date +%H%M%S)"
+output="/Users/shawn_gollatz/local/bin/hashdog.d/appended_command"
+input_lines=$(cat "$input".conf | wc -l)
+texts=$(cat "$input".conf)
+
+count=1
+command_line="hashcat"
+echo "Review configuration for hashcat:"
+
+for line in $texts;
+do
+  echo
+  user_override=''
+  varname=$(echo "$line" | awk -F\= '{ print $1 }')
+  valueis=$(echo "$line" | awk -F\= '{ print $2 }')
+
+
+  echo -e "$varname is set to $valueis"
+  echo -en "Enter new $varname value or press <Enter> to accept: " 
+
+  read -p "" user_override
+
+  if [ "$user_override" ]; then
+     echo "Using $user_override as new value for $varname"
+     valueis="$user_override"
+  fi
+
+  command_line="$command_line $valueis"
+  echo "$varname"="$valueis" >> "${input_new}.conf"
+
+
+
+  if [ $count == $input_lines ]; then
+     echo "$command_line" | tee "$output"
+  fi
+  ((count++))
+done
+cp "$input_new".conf "$input".conf 
+echo; cat "$output"
+
+runcommand() {
+(cat "$output")
+}
+
+read -p "Run this command now? Y/n : " yesno
+case "$yesno" in
+    'yes')
+       runcommand
+       ;;
+    'Y')
+       runcommand
+       ;;
+    'YES')
+       runcommand
+       ;;
+    'y')
+       runcommand
+       ;;
+    'Yes'
+       runcommand
+       ;;
+     *)
+       exit 0
+       ;;
+esac
+
+exit 0 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

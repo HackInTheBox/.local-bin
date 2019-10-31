@@ -1,0 +1,100 @@
+#!/bin/bash
+#SETS COMPLETELY RANDOM MAC ADDRESS FOR ALL CURRENTLY DETECTABLE NETWORK DEVICES
+######################################################################
+######################################################################
+#iflist='~/tmp/iflist.tmp'
+#funciflist() {
+#	$NULL > $iflist
+#	rfkill | grep 'block' | gawk -e '{print $1}' | while read line
+#	do echo $line >> $iflist; done; }
+######################################################################
+devicelist='/home/shawn/tmp/devicelist.tmp'
+logfile='/home/shawn/var/macc_log'
+$NULL > "$devicelist"
+sleep 60s
+
+rfkill1() {
+/usr/sbin/rfkill
+}
+rfkillblockall() {
+/usr/sbin/rfkill block all
+}
+rfkillunblockall() {
+/usr/sbin/rfkill unblock all
+}
+timestamp() {
+	date -u +%Y-%m-%d-%H:%M:%S; }
+funcdevicelist() {
+	ip a | grep 'state' | awk '{print $2}' | sed 's/://g' | while read devic3
+	do echo $devic3 >> $devicelist; done }
+funcdevicelist
+macstat() {
+	cat $devicelist | while read devicename
+	do echo "Device $devicename:"
+			echo "debug line 23                                 $(timestamp)"
+	sudo /usr/bin/macchanger -s $devicename
+	done; }
+
+#currentmac() {
+#	sudo /usr/bin/macchanger -s $i | grep 'Current' | awk '{print $3}'; }
+#permmac() {
+#	sudo /usr/bin/macchanger -s $i | grep 'Permanent' | awk '{print $3}'; }
+######################################################################
+######################################################################
+macchange() {
+	echo ""; echo "                                               $(timestamp)"
+	echo "Printing Existing Configuration..."
+macstat
+	echo ""; echo "Current device status:"
+##################################################
+#fkill
+#c=0
+#while [[ $c == 0 ]];
+#do printf " ."
+#sleep 2s
+#fkill
+#z=$(fkill | wc -w)
+#if [[ $z -gt 9 ]]; 
+#then c=100
+#fi
+#done
+
+##################################################
+seq 0 20  | while read p; do printf " ."; sleep .5s; done; echo ""
+rfkillunblockall
+rfkill1
+	echo ""; echo "Shutting down connections..."
+rfkillblockall
+rfkill1
+	echo ""; echo "Setting Random MAC Addresses..." 
+#############################################
+#waits until all mac addresses are different
+cat $devicelist | while read i
+do
+	sudo /usr/bin/macchanger -rb $i
+		
+		if [ "$(sudo /usr/bin/macchanger -s $i | grep 'Current' | awk '{print $3}')" == "$(sudo /usr/bin/macchanger -s $i | grep 'Permanent' | awk '{print $3}')" ]
+		then 
+			echo "debug line 52   first attempt fail                    $(timestamp)"
+			seq 0 20  | while read p; do printf " ."; sleep .5s; done; echo ""
+			sudo /usr/bin/macchanger -rb $i
+		fi
+	echo "debug line 57                                 $(timestamp)"
+done
+#############################################
+	echo ""; echo "Restarting hardware..."; rfkillunblockall	
+rfkill1	
+	echo ""; echo ""; echo "Enjoy your anonymity, weirdo!"; echo ""; 
+echo " __  __    _    ____     _                                _ _ "
+echo "|  \/  |  / \  / ___|___| |__   __ _ _ __   __ _  ___  __| | |"
+echo "| |\/| | / _ \| |   / __| '_ \ / _\` | '_ \ / _\` |/ _ \/ _\` | |"
+echo "| |  | |/ ___ \ |__| (__| | | | (_| | | | | (_| |  __/ (_| |_|"
+echo "|_|  |_/_/   \_\____\___|_| |_|\__,_|_| |_|\__, |\___|\__,_(_)"
+echo "                                           |___/ "
+echo ""
+
+
+}
+macchange | tee -a $logfile 
+######################################################################
+

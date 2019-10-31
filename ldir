@@ -1,0 +1,22 @@
+#!/bin/bash
+userinput="$*"
+if [ "$userinput" == '' ]; then
+userinput='.'
+fi
+ls -1pbAhF "$userinput" | grep '\/' | sort -u 
+#echo "short"
+
+
+
+
+
+
+exit 0
+
+
+userinput="$*"
+if [ "$userinput" == '' ]; then
+userinput='.'
+fi
+ls -lpAhF --color=yes "$userinput" | grep '\/' | sort -k 9.1 -u
+#echo "long"

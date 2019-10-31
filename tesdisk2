@@ -1,0 +1,48 @@
+#!/bin/bash
+
+######################################################
+# everything below this line is still experimetal ##########################
+################################################################################
+
+logfile=$HOME/Desktop/diskmark.txt
+userinput="$*"
+
+if [ -d "$userinput" ]; then
+echo preparing external drive
+else
+echo error in external folder && exit 1
+fi
+
+read -p 'BACKUP HIGHLY RECOMMENDED.  PRESS CTRL\+C TO EXIT OR <ENTER> to CONTINUE'
+echo testing write speed...
+errcode=1
+sync; sudo dd if=/dev/zero of="$userinput"/tempfile bs=1M count=1024 status=progress; sync && errcode=0
+if [ errcode == 0 ]; then
+echo cleaning up... 
+# && sudo rm -i tempfile
+else
+echo 'ERROR\! Run sudo journalctl -n 300 for logging details'
+fi
+
+
+#To get the real speed, we have to clear cache.
+
+echo dumping buffers...
+sudo dd of="$userinput"/tempfile of=/dev/null bs=1M count=1024 status=progress | tee "$logfile"
+
+sudo /sbin/sysctl -w vm.drop_caches=3
+
+echo testing read speed...
+errcode=1
+sudo dd if="$userinput"/tempfile of=/dev/null bs=1M count=1024 status=progress | tee "$logfile" && errcode=0
+
+echo exiting
+
+exit 0
+
+
+
+
+
+
+

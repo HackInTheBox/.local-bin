@@ -1,0 +1,13 @@
+#!/bin/bash
+# hackbox
+# CLI interface to syncronize custom scripts and config files across multiple hosts / workstations
+
+echo "hackbox is a work in progress. check back later."
+exit 0
+
+# pull the id parsing script from .bash_aliases Yarn wrote for the root path to relative file locations
+
+script_config_file='local/bin/hackbox.d/hackbox.conf'
+host_server_hostname=tgn-server
+host_server_address=172.20.0.100
+host_server_root='/data/hackinthebox'
