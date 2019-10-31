@@ -5,8 +5,8 @@
 option="$*"
 
 . ifexists wpa_supplicant
-. network-manager
-. airmon-ng
+. ifexists network-manager
+. ifexists airmon-ng
 
 statusrep() {
 echo Status Check:
