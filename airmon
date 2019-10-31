@@ -4,6 +4,10 @@
 #
 option="$*"
 
+. ifexists wpa_supplicant
+. network-manager
+. airmon-ng
+
 statusrep() {
 echo Status Check:
 
@@ -44,7 +48,6 @@ case $option in
         ;;
 esac
 
-exit 0
 
 
 
