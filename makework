@@ -1,3 +1,9 @@
+# This is a script used in an Apple Macro for processing image files as 35mm files are scanned in off the scanner.
+# The Apple "Preview" Application compresses images incorrectly, and does not save files with the correct number of
+# Color-depth bits.  So, I installed ImageMagick using Brew"
+# Known Bug:  Every time there is an update to ImageMagick, the location of the binaries change because the name of the 
+# Folder changes.  That must then be updated in the code.
+
 userinput="$*"
 
 ls -1 "$userinput" | grep 'png' | while read theline; do
@@ -10,8 +16,12 @@ echo "$line"
 if [ -f "$line" ]; then
   sleep 1
 
-  fillenvironment() { mkdir -p "$varpif" "$varout" "$varpof" "$varpcf" "$varptf" "$varptt"; }
-  timestamp() { date -u +%m%d-%H%M%S; }
+  fillenvironment() { 
+    mkdir -p "$varpif" "$varout" "$varpof" "$varpcf" "$varptf" "$varptt"
+  }
+  timestamp() { 
+    date -u +%m%d-%H%M%S
+  }
 
     cnstdn='1981-1982_'
     cnstdf='Desktop'
