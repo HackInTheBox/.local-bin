@@ -1,0 +1,5 @@
+#uncomment for DNS mapping
+#8.8.8.8, 46.227.67.134, 192.165.9.158
+script-security 2
+up /etc/openvpn/update-resolv-conf
+down /etc/openvpn/update-resolv-conf

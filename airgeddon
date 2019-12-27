@@ -1,0 +1,6 @@
+#!/bin/bash
+#airgeddon
+
+#just a shortcut to launch the git version of airgeddon
+
+sudo bash /home/yarn/git/airgeddon/airgeddon.sh

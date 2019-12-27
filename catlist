@@ -1,0 +1,28 @@
+#!/bin/bash
+#  # catlist
+exit 0
+#  
+#  unset count
+#  unset colcount
+#  colors="red yellow green blue navy"
+#  . ifexists gcol
+#  tabs -12
+#  
+#  makeblob() {
+#  cat "$1" | while read -r line; do
+#     ((count++))
+#     newline=( expr $count % 4 )
+#     echo -en "$line "
+#     if [ $newline == 0 ]; then
+#        ((colcount++))
+#        colorchoice=( expr $colcount % 5 )
+#        . gcol $(echo $colors | awk '{ print $colorchoice }')
+#        echo -en "\n"
+#     else
+#        echo -en "\t"
+#     fi
+#  done
+#  }
+#  makeblob "$1"
+#  
+#  

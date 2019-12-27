@@ -1,0 +1,21 @@
+#!/bin/bash
+# interface_shortcuts
+# make aliases for unnecessarily long network interface names like "en0sp4aaac52xs1"
+
+export IF=($(ip -br a | awk '{ print $1 }' | tr '\n' ' '))
+interfaceqty=$(wc -w <<< ${IF[@]})
+listIF() {
+echo "ID INTERFACE"
+while read variableInterface; do
+echo "if$variableInterface ${IF[$variableInterface]}"
+done <<< $(seq 0 $(( $interfaceqty - 1 )))
+}
+. gcol yellow
+echo "Network interface shortcuts: "
+. gcol white
+listIF | column -t
+
+export if0=${IF[0]}; export if1=${IF[1]}; export if2=${IF[2]}; export if3=${IF[3]}; export if4=${IF[4]}
+export if5=${IF[5]}; export if6=${IF[6]}; export if7=${IF[7]}; export if8=${IF[8]}; export if9=${IF[9]}
+
+

@@ -1,0 +1,28 @@
+#!/bin/bash
+# dynamic-update
+
+echo "Script under construction.  Exiting"
+exit
+
+# Gets current external IP address from internet, then updates googleDNS with it.
+
+# This is a work in progress and needs WORK!
+# 
+# Concerns:
+#   Will it work-around a VPN or Virtual Private Network?
+#   Can it update multiple domain names?
+#   Can I store the password more securely, other than just in this script?
+#   Can I store the USERNAME.PASSWORD combo with the HOSTNAME in a separate plain text file, then just iterate the updates from a .conf file or all text files within a directory>
+
+### Google Dynamic DNS: https://support.google.com/domains/answer/6147083
+### Synthetic Records: https://support.google.com/domains/answer/6069273
+
+USERNAME=""
+PASSWORD=""
+HOSTNAME="macmini.customdomain.com"
+
+# Resolve current public IP
+IP=$( dig +short myip.opendns.com @resolver1.opendns.com )
+# Update Google DNS Record
+URL="https://${USERNAME}:${PASSWORD}@domains.google.com/nic/update?hostname=${HOSTNAME}&myip=${IP}"
+curl -s $URL

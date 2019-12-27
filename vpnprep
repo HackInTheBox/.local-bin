@@ -1,69 +1,201 @@
 #!/bin/bash
 # vpnprep
-# ~/local/bin/vpnprep.d/vpnprep.conf
+# vpnprep downloads a csv file from vpngate.net, decodes configurations from base64,
+# and makes the fastest 3 entries into .ovpn files, then modifies them by adding
+# custom lines of code.  Existing vpns are removed from the OS, then the lastest
+# 6 ovpn configurations are added back into the OS.
 
+. ifexists curl
+. ifexists gcol
+. ifexists nmcli
 if [ ! $(uname -s) == "Linux" ]; then
    echo 'This program only works on linux machines.  No version for mac yet.'
    exit 0
 fi
-
-conf="$HOME/local/bin/vpnprep.d/vpnprep.conf"
-insert_flag='# The certificate file of the destination VPN Server.'
-uinpu="$*"
-
-id10tck() {
-echo 'This program adds lines network-manager-gnome needs to make vpngate.net config files to work'
-read -p 'Your file needs to be from vpngate.net.  Proceed? Y|n:? ' yesno
-case $yesno in
-    Y*|y*)
-        echo
-        ;;
-    *)
-        echo Aborting...
-        exit 0
-        ;;
-esac
+#prompt a passcode
+sudo echo -n
+download_vpn_file() {
+   mkdir -p ~/local
+   mkdir -p ~/local/tmp
+   . gcol yellow
+   echo "Downloading latest VPN configuration files..."
+   . gcol white
+   curl http://www.vpngate.net/api/iphone/ -o ~/local/tmp/vpngate.csv
+   error_flag=$?
+   if [ ${error_flag} != 0 ]; then
+      echo; . gcol red
+      echo "Error downloading CSV from vpngate.net."
+      echo "Error code from curl.  Aborting..."
+      . gcol white
+      exit 1
+   fi
 }
-# Uncomment for user confirmation
-#id10tck
+checksize() {
+   download_size=$(stat --printf="%s" ~/local/tmp/vpngate.csv)
+   if [ $download_size -lt 49999 ]; then
+      echo; . gcol red
+      echo "Error downloading CSV from vpngate.net."  
+      echo "Unexpected download size of ${download_size}.  Aborting..."
+      . gcol white
+      exit 1
+   fi
+}
+timestamp() {
+   date +"%B_%d"
+}
+prepfile() {
+   # ~/local/bin/vpnprep.d/vpnprep.conf
+   conf="$HOME/local/bin/vpnprep.d/vpnprep.conf"
+   insert_flag='# The certificate file of the destination VPN Server.'
+   target_ovpn_file="$*"
+   extension="$(echo "$target_ovpn_file" | tail -c 6)"
+   #echo "$extension"
+   if [ ! -f "$conf" ]; then
+      echo "No configuration file found."
+      echo "Expected to find a text file at ${conf}"
+      exit 2
+   elif [ ! "$extension" == ".ovpn" ]; then
+      echo Enter a .ovpn file to modify
+      exit 1
+   else
+      ready_to_cat=true
+   fi
 
-extension="$(echo "$uinpu" | tail -c 6)"
-#echo "$extension"
-if [ ! -f "$conf" ]; then
-    echo "No configuration file found"
-    exit 2
-elif [ ! "$extension" == ".ovpn" ]; then
-    echo Enter a .ovpn file to modify
-    exit 1
-else
-    ready_to_cat=true
-fi
+   modified_file=$(echo "$target_ovpn_file" | sed -E 's/\.ovpn$/-modified\.ovpn/g')
+   c=$(sed -n '/The\scertificate\sfile\sof\sthe\sdestination\sVPN\sServer/=' "$target_ovpn_file")
+   a=$(( $c - 3 ))
+   b=$(( $a + 1 ))
 
-modified_file=$(echo "$uinpu" | sed -E 's/\.ovpn$/-modified\.ovpn/g')
-c=$(sed -n '/The\scertificate\sfile\sof\sthe\sdestination\sVPN\sServer/=' "$uinpu")
-a=$(( $c - 3 ))
-b=$(( $a + 1 ))
-debug1() {
-echo $modified_file
-echo $uinpu
-echo a: $a b: $b
-echo $ready_to_cat
-echo $conf
-
-exit 0
+   head -n $a "$target_ovpn_file" > "$modified_file"
+   cat "$conf" >> "$modified_file"
+   tail -n +$b "$target_ovpn_file" >> "$modified_file"
+   . gcol blue
+   echo -n "Created " 
+   . gcol white
+   echo $modified_file
+#   . gcol white
 }
 
-head -n $a "$uinpu" | tee "$modified_file"
-cat "$conf" | tee -a "$modified_file"
-tail -n +$b "$uinpu" | tee -a "$modified_file"
+download_vpn_file
+checksize
+
+VPNCODE64=$(cat ~/local/tmp/vpngate.csv | awk -F ',' '{print $15}')
+echo "$VPNCODE64" > ~/local/tmp/vpngate.csv.64
+
+#define the array
+arr=()
+while IFS= read -r line; do
+   arr+=("$line")
+done < ~/local/tmp/vpngate.csv.64
+
+. gcol yellow
+echo "Creating VPN files..."
+. gcol white
+
+mkdir -p ~/vpn
+count=0
+seq 2 4 | while read line; do
+   ((count++))
+   filename=~/vpn/vpn_$(timestamp)_${count}.ovpn
+   echo -n ${arr[$line]} | base64 -d -i > ${filename}
+   . gcol navy
+   echo -n "Created "
+   . gcol white
+   echo $filename
+#   . gcol white
+   prepfile ${filename}
+done
+
+remove_vpns() {
+   vpn_count=0
+   nmcli connection show | sort -r | grep 'vpn' | while read -r line; do
+   ((vpn_count++))
+   if [ ${vpn_count} -gt 0 ]; then
+      connection_type=$(echo "${line}" | awk '{ print $3 }')
+      connection_id=$(echo "${line}" | awk '{ print $2 }')
+      connection_name=$(echo "${line}" | awk '{ print $1 }')
+      if [ "${connection_type}" == "vpn" ]; then
+         remove_profile=TRUE
+         sudo nmcli connection delete "${connection_id}" >/dev/null
+         . gcol red
+         echo -n "Deleted "
+         . gcol white
+         echo "${connection_id}"
+      fi
+   fi
+   done
+}
+
+add_latest_vpns() {
+   count=0
+   ls -1t $HOME/vpn | grep 'modified.ovpn' | while read -r line; do
+      ((count++))
+      if [ $count -gt 6 ]; then
+         break 2
+      else
+         sudo nmcli connection import type openvpn file $HOME/vpn/$line >/dev/null
+         . gcol green
+         echo -n "Added "
+         . gcol white
+         echo "${line}"
+      fi
+   done
+}
+connect_to_vpn() {
+echo;
+#connect to first profile
+   new_vpn_profile_list=$(ls -1t $HOME/vpn | grep 'modified.ovpn')
+   new_vpn_profile=$(echo "$new_vpn_profile_list" | head -n 3 | tail -n 1 | sed 's/.ovpn//g')
+   . gcol yellow
+   echo "Connecting to ${new_vpn_profile}"
+   sudo nmcli con up id "${new_vpn_profile}" >/dev/null
+#was it successful?   
+      erck=$?
+# if unsuccessful....
+      if [ $erck != 0 ]; then
+         . gcol red
+         echo "Connection to ${new_vpn_profile} failed."
+         . gcol yellow
+         new_vpn_profile=$(echo "$new_vpn_profile_list" | head -n 2 | tail -n 1 | sed 's/.ovpn//g')
+         echo "Connecting to ${new_vpn_profile}"
+         sudo nmcli con up id "${new_vpn_profile}" >/dev/null
+         erck=$?
+            if [ $erck != 0 ]; then
+             . gcol red
+               echo "Connection to ${new_vpn_profile} failed."
+               new_vpn_profile=$(echo "$new_vpn_profile_list" | head -n 1 | sed 's/.ovpn//g')
+               . gcol yellow
+               echo "Connecting to ${new_vpn_profile}"
+               sudo nmcli con up id "${new_vpn_profile}" >/dev/null
+               erck=$?
+                  if [ $erck == 0 ]; then
+                     . gcol green
+                     echo "Connection to ${new_vpn_profile} successful."
+                  else
+                     . gcol red
+                     echo "Connection to ${new_vpn_profile} failed.  Try manually.  Aborting."
+
+                  fi
+            else
+               . gcol green
+               echo "Connection to ${new_vpn_profile} successful."
+            fi
+   
+   else
+      . gcol green
+      echo "Connection to ${new_vpn_profile} successful."
+   fi
+}
+
+. gcol white
+remove_vpns
+add_latest_vpns
+connect_to_vpn
 
 
-echo -e "\n\nAdded configuration for Ubuntu.  Load Open VPN and test."
-
-exit 0
+echo
 
 
-# sed -n '/Databases/=' thegeekstuff.txt
-
-
+# these lines will now automatically import the new configuration files
+#sudo nmcli connection import type openvpn file **insert-file-here**
 

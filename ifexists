@@ -1,0 +1,30 @@
+#!/bin/bash
+# ifexists
+# check to see if a command or fuction exists
+
+check_hash() {
+if [ ! "$1" ]; then
+    echo "Please include a function or program to check"
+fi
+hash $1 2>/dev/null
+errck=$?
+if [ $errck -eq 0 ]; then
+  #echo "$1 installed"
+  query_installed=true
+  else
+  echo "$1 not installed.  Please install before continuting."
+      read -p "Press (Y) to continue or (N) to exit: " yesno
+      case $yesno in
+            Y*|y*)
+                  echo "You may experience bugs."
+                  ;;
+            *)
+                  echo "Exiting..."
+                  exit 0
+                  ;;
+      esac
+
+  fi
+}
+
+check_hash "$1"

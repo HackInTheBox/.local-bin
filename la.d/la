@@ -1,0 +1,18 @@
+#!/bin/bash
+#lll
+#list-long format
+# This one skips the hidden files
+variablell() {
+ls -lFph --color=auto $*
+}
+blankll() {
+ls -lFph --color=auto
+}
+
+if [ $1 ]; then
+variablell $*
+else
+blankll
+fi
+
+exit 0

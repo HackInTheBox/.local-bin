@@ -35,14 +35,14 @@ case $player in
    ;;
 esac
 
-#echo "You are $player"
-#echo "Your home directory is $home"
-#echo "Your user name is $user"
-#echo "And your desktop is found at $home/$user/Desktop"
+echo "You are $player"
+echo "Your home directory is $home"
+echo "Your user name is $user"
+echo "And your desktop is found at $home/$user/Desktop"
 
 
 if [ "$player" == "iMac11" ]; then
-afplay /Users/shawn_gollatz/sb/tr2.mp3&
+afplay /Users/shawn_gollatz/sb/tr2.mp3
 else
 echo "not a mac"
 fi

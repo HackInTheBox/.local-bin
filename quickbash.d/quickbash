@@ -1,0 +1,31 @@
+#!/bin/bash
+
+quickbashsh() {
+   dest='/home/yarn/.bash_aliases'
+   if [ -f "$dest" ]; then
+      cnam=$(echo "alias $*" | awk -F\= '{ print $1 }')  
+      funn=$(echo "alias $*" | awk -F\= '{ print $2 }')  
+      glob=$(echo "$cnam='"$funn"'")
+      sed -E '/alias\ -p/d' "$dest" > "$dest".tmp
+      cp "$dest".tmp "$dest" && rm "$dest".tmp
+      if [ $? -ne 0 ]; then 
+         echo "error removing line"; 
+      fi
+      echo "$glob" >> "$dest"
+      if [ $? -ne 0 ]; then 
+         echo "error writing command"; 
+      fi
+      echo "alias -p | sed -E 's/alias\ //g'" >> "$dest"
+      if [ $? -ne 0 ]; then 
+         echo "error re-writing line"
+      fi
+   else
+      echo No valid destination
+   fi
+}
+quickbashsh $*
+exit 0
+
+
+
+

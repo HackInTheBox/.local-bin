@@ -1,0 +1,69 @@
+#!/bin/bash
+# vpnprep
+# ~/local/bin/vpnprep.d/vpnprep.conf
+
+if [ ! $(uname -s) == "Linux" ]; then
+   echo 'This program only works on linux machines.  No version for mac yet.'
+   exit 0
+fi
+
+conf="$HOME/local/bin/vpnprep.d/vpnprep.conf"
+insert_flag='# The certificate file of the destination VPN Server.'
+uinpu="$*"
+
+id10tck() {
+echo 'This program adds lines network-manager-gnome needs to make vpngate.net config files to work'
+read -p 'Your file needs to be from vpngate.net.  Proceed? Y|n:? ' yesno
+case $yesno in
+    Y*|y*)
+        echo
+        ;;
+    *)
+        echo Aborting...
+        exit 0
+        ;;
+esac
+}
+# Uncomment for user confirmation
+#id10tck
+
+extension="$(echo "$uinpu" | tail -c 6)"
+#echo "$extension"
+if [ ! -f "$conf" ]; then
+    echo "No configuration file found"
+    exit 2
+elif [ ! "$extension" == ".ovpn" ]; then
+    echo Enter a .ovpn file to modify
+    exit 1
+else
+    ready_to_cat=true
+fi
+
+modified_file=$(echo "$uinpu" | sed -E 's/\.ovpn$/-modified\.ovpn/g')
+c=$(sed -n '/The\scertificate\sfile\sof\sthe\sdestination\sVPN\sServer/=' "$uinpu")
+a=$(( $c - 3 ))
+b=$(( $a + 1 ))
+debug1() {
+echo $modified_file
+echo $uinpu
+echo a: $a b: $b
+echo $ready_to_cat
+echo $conf
+
+exit 0
+}
+
+head -n $a "$uinpu" | tee "$modified_file"
+cat "$conf" | tee -a "$modified_file"
+tail -n +$b "$uinpu" | tee -a "$modified_file"
+
+
+echo -e "\n\nAdded configuration for Ubuntu.  Load Open VPN and test."
+
+exit 0
+
+
+# sed -n '/Databases/=' thegeekstuff.txt
+
+
+

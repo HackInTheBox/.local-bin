@@ -25,6 +25,16 @@
 #              |_lib/
 #
 #
+# VERIFY APT IS A PACKAGE MANAGER FOR OPERATING SYSTEM
+apt list ssh >&/dev/null
+if [ $? -ne 0 ]; then
+    echo "Could not verify 'apt' is your system's software manager."
+    echo "This script is for Debian-based Linux systems only."
+    echo "Exiting."
+    exit 0
+fi
+
+
 blue() { echo -en \033[36m; }
 red() { echo -en \033[31m; }
 white() { echo -en \033[00m; }
@@ -78,13 +88,18 @@ execute_sourcelist() {
 if [ -f "$sourcepath" ]; then
    echo -e "# **************************************************************************\n#"
    echo -e "# sources from ${sourcepath}\n#\t"
+   echo $sourcepath
+   unset count 
+   length=$(cat $sourcepath | wc -l)
    cat "$sourcepath" | while read -r line; do
+
       if [ "$line" == "" ] || [ $(echo "$line" | head -c 1) == "#" ]; then
          skip_this_line=true
       else
          echo -e "\t${line}"
       fi
-      if [ "$line" == "$(cat $sourcepath | tail -n 1)" ]; then
+      ((count++))
+      if [ "$count" == "$length" ]; then
          reached_end_of_file=true
          echo -e "\t<Reached end of file>\n"
       fi
@@ -101,16 +116,24 @@ execute_manuals() {
 }
 
 execute_ppa() {
+    unset count 
+
+
     if [ -d "$ppasources" ]; then
+       #length=$(ls -A1p | grep -v '\/' | wc -l)
+       
        echo -e "# **************************************************************************\n#"
        echo -e "# sources listed in ${ppasources}\n#"
-       if [ ! $(ls -1p "$ppasources" | grep -v '\/') ]; then
-            echo -e "#\tdirectory exists, but is empty\n#"
-       else
-            ls -1p "$ppasources" | grep -v '\/' | while read line; do
-            echo -e "\t$line"
+       if [ $(ls -1Ap "$ppasources" | grep -v '\/' | wc -l) -gt 0 ]; then
+            ls -1Ap "$ppasources" | grep -v '\/' | while read line; do
+               echo -e "\t$line"
+               #((count++))
             done
+
+       else
+            echo -e "#\tdirectory exists, but is empty\n#"
        fi
+    
     echo -e "\t<Reached end of file>\n"
     fi
 }

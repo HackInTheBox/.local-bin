@@ -1,0 +1,42 @@
+#!/bin/bash
+# makepixel
+# pixellates an image using imagemajik
+
+
+unset count; unset h; unset input; unset rawinput; unset output
+h=$(echo "$1" | sed -E 's/[^0-9\.]//g')
+echo $h
+hint=$(sed -e 's/\..*$//g' <<< $h)
+echo $hint
+if [ $hint -ge 100 ] || [ $hint -le 0 ]; then
+   echo "Syntax:  makepixel <1-99>"
+   exit 0
+fi
+makepixel() {
+echo "Drag an image onto the terminal window or type in the"
+echo "full path of the target image including the file extension"
+read rawinput
+
+input=$(sed -e 's/^"//' -e 's/"$//' -e "s/^'//" -e "s/'$//" <<<"$rawinput")
+output="$(echo "$input" | sed -e 's/\s/_/g' -e 's/\..+$//g')_${h}-scale_.jpg"
+
+while [ -f $output ]; do
+   ((count++))
+   output="$(echo "$output" | sed -e 's/\s/_/g' -e 's/\..+$//g')_${h}-scale_$count.jpg"
+   if [ $count -ge 1000 ]; then
+      . gcol red
+      echo error
+      . gcol white
+      exit
+   fi
+done
+inflated=$(bc -l <<< "scale=2; 10000 / ${h}")
+convert -scale ${h}% -scale ${inflated}% "$input" "$output"
+}
+
+makepixel $h
+
+
+
+
+

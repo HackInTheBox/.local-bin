@@ -1,0 +1,112 @@
+#!/bin/bash
+# bashlist
+# list available commands
+
+hostn=$(hostname); 
+me="$(echo $(users) | awk '{ print $1 }')"
+platform="$(echo $(uname -a) | awk '{ print $1 }')"
+case "$platform" in
+   "Linux")
+       homepath="/home/$me"
+       rootpath='/root'
+  ;;
+   "Darwin")
+       homepath="/Users/$me"
+       rootpath='/var/root'
+  ;;
+   *)
+       homepath=$HOME
+       if [ -d /root ]; then
+          rootpath=/root
+       else
+          rootpath=$HOME
+       fi
+  ;;
+esac
+
+blue() { echo -en '\033[36m'; }
+red() { echo -en '\033[31m'; }
+white() { echo -en '\033[00m'; }
+
+#####################################
+
+skipme() {
+tabs -20
+echo "Loaded Aliases:"
+glob="$(alias -p)"
+echo "$glob" | while read n; do
+  ((count++))
+  blue; echo -n $count".) "
+  red; echo -en "$(echo "$n" | sed -r 's/alias\ //g' | sed -r 's/=.*$//g')\t"
+  echo -n " ";
+  if [ $( expr $count % 3 ) -eq 0 ]; then
+    echo -en "\n"
+  fi
+done
+tabs -8
+}
+
+
+alias su='pardon me'
+showaliases() {
+echo -e "Aliases...\n\n"
+unset count
+tabs -20
+alias -p 
+glob=$(alias -p)
+echo "$glob" | while read line; do 
+  ((count++))
+  blue; echo -n $count".) "
+  red; echo -en "$(echo "$n" | sed -r 's/alias\ //g' | sed -r 's/=.*$//g')\t"
+  echo -n " ";
+  if [ $( expr $count % 3 ) -eq 0 ]; then
+    echo -en "\n"
+  fi
+done
+tabs -8
+
+}
+#####################################
+showfunctions() {
+echo "Loaded functions:"
+blue; echo "myipis pings"
+}
+#####################################
+showscripts() {
+echo -e "Scripts in ~/local/bin\n\n"
+unset count
+tabs -20
+ls -1Fhp ${homepath}/local/bin | grep -v '\/' | while read line; do 
+  ((count++))
+  echo -en '\033[36m'"${count}.)"'\033[31m'" $line \t"
+  if [ $( expr $count % 3 ) -eq 0 ]; then
+    echo -en "\n"
+  fi
+done
+tabs -8
+}
+
+showscripts
+skipme
+showaliases
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,14 @@
+convert -scale 10% -scale 1000% '/home/shawn/Pictures/Account_Avatar.JPG' '/home/shawn/Pictures/Account_Avatar_pixelated.jpg'
+
+# convert -scale 5% -scale 2000% '/home/shawn/Pictures/Account_Avatar.JPG' '/home/shawn/Pictures/Account_Avatar_pixelated_2000.jpg'; convert -scale 7.5% -scale 1333.33% '/home/shawn/Pictures/Account_Avatar.JPG' '/home/shawn/Pictures/Account_Avatar_pixelated_1333.jpg'; convert -scale 3% -scale 3333% '/home/shawn/Pictures/Account_Avatar.JPG' '/home/shawn/Pictures/Account_Avatar_pixelated_3333.jpg'
+
+
+convert input.jpg -colors 61 output.jpb
+
+makepixel() {
+echo "Enter a number 1-100 for scale followed by input image."
+echo "Example: $ 20.5 /home/jack/Pictures/mypicture.jpg"
+read h input
+convert $input -scale ${h}% -scale $(( 100 / ${h} ))% $(echo $input | sed -E 's/\..+$//g')_${h}-scale_.jpg
+}
+

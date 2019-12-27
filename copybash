@@ -1,0 +1,165 @@
+#!/bin/bash
+#copybash
+sample_glob_src="
+[files]
+local/bin/etc/bash/bashdocs
+.bashrc
+.bash_aliases
+.bash_profile
+.bash_logout
+.bash_variables
+.profile
+local/bin/ifexists
+local/bin/gcol
+
+[folders]
+local/bin
+local/var/log/apt
+local/var/log
+local/var/backups
+local/tmp   
+local/share
+
+
+
+ local/etc
+.ssh
+
+
+"
+
+
+
+filter01=$(sed -E 's/\s//g' <<< "$sample_glob_src")
+filter03=$(echo $(tr '\n' ' ' <<< $filter01) | tr -s ' ')
+lengths=$(wc -w <<< "$filter03")
+filter_array=($filter03)
+fileline=$(cut -d : -f1 <<< $(grep -n '\[files\]' <<< "$sample_glob"))
+direline=$(cut -d : -f1 <<< $(grep -n '\[folders\]' <<< "$sample_glob"))
+declare filestart
+declare folderstart
+for n in $(seq 0 $(( $lengths - 1 ))); do
+   ((count++))
+   #echo ${filter_array[$n]}
+   case ${filter_array[$n]} in
+         "[files]")
+                  filestart=$(( $count ))
+                  ;;
+         "[folders]")
+                  folderstart=$(( $count ))
+                  ;;
+   esac
+done
+
+declare -a filearray
+while read line; do
+   filearray+=("${filter_array[$line]}")
+done<<<$(seq $filestart $(( $folderstart -2 )))
+
+
+declare -a folderarray
+while read line; do 
+   folderarray+=("${filter_array[$line]}")
+done<<<$(seq $folderstart $(( $lengths -1 )))
+
+
+echo FOLDERS: ${folderarray[@]}
+num=3
+echo folder number $num: ${folderarray[$(( $num - 1 ))]}
+
+echo FILES: "${filearray[@]}"
+num=7
+echo "file number $num: ${filearray[$(( $num - 1 ))]}"
+#echo "$filter01"
+
+
+#echo ${filter_array["\[folders\]"]}
+
+
+
+exit
+###############################################
+
+
+#########PARSE DIRECTORY DEPTHS
+cm=0
+
+for path in $sample_glob; do
+if [ -d $HOMEPATH/$path ]; then
+   spacepath=($(sed -e 's/\// /g' <<<$path))
+
+   nf=$(echo $path | awk -F/ '{ print NF }')
+      if [ $nf -gt $cm ]; then
+         cm=$nf
+      fi
+   echo ${spacepath[@]}
+   for runner in $(seq $nf); do
+      runnerminus=$(( $runner - 1 ))
+      echo "level $runner = ${spacepath[$runnerminus]}"
+      temps=${spacepath[$runnerminus]}
+      depflev[$runner]+="$temps "
+   done
+echo
+
+fi
+done
+
+########## only checks EXISTING directories
+for n in $(seq $cm); do
+echo
+echo $n
+   for dire in $(echo ${depflev[$n]} | sed -e 's/\s/\n/g' | sort -u); do
+      #if [ -d $HOMEPATH/$dire ]; then
+         echo $dire
+      #fi
+   done
+done
+
+
+
+exit
+#############################################################################
+src=$HOMEPATH/bash/home/user/local
+filelist=$src/etc/bash/bashdocs
+file_glob=$(cat $filelist)
+
+parselist01() {
+unset bashdirs
+unset bashfils
+for line in "$file_glob"; do
+   if [ -d "$line" ]; then
+      bashdirs="$(echo -e $line\n$bashdirs)"
+   elif [ -f "$line" ]; then
+      bashfils="$(echo -e $line\n$bashfils)" 
+   fi
+done
+}
+
+parsedirs() {
+for line in "$bashdirs"; do
+
+done
+}
+
+parsefils() {
+for line in "$bashfils"; do
+
+done
+}
+
+copy_bash() {
+mkdir -p $HOMEPATH/bash $HOMEPATH/bash/home $HOMEPATH/bash/home/user \
+$src \
+$src/bin \
+$src/etc \
+$src/etc/bash \
+$src/var \
+$src/var/log \
+$src/var/log/apt \
+$src/var/backups
+cat /media/yarn/nvme0n1p5/shawn/local/etc/bash/bashdocs | while read line; do
+    cp -r "/media/yarn/nvme0n1p5/shawn/$line" \
+    "$HOMEPATH/bash/home/user/$line"
+    done
+    }
+copy_bash

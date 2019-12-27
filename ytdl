@@ -1,13 +1,72 @@
 #!/bin/bash
+# ytdl
+# shortcuts the YOUTUBE-DL command and creates a folder in ~/downloads/youtube-dl/{timestamp}
+
+#check to see if the right packages are installed
+. ifexists youtube-dl
+. ifexists figlet
+. ifexists gcol
+
+userinput="$1"
+#folderoption="$2"
+
 function fytdl() {
-mkdir -p ~/Downloads/youtube-dl
-spdir=$(date +"%H%M%S")
-mkdir -p ~/Downloads/youtube-dl/$spdir
-echo "YouTube-DL... syntax $ ytdl http://www.yourvideo.com/path/entered/here.html"
-echo "options -c, -i, and -format=best enabled."
-echo "Saving video to $HOME/Downloads/youtube-dl/$spdir"
-echo "Downloading video from $1"
-echo "Press ctrl+c to interrupt"
-youtube-dl -ci -f best $1 -o "$HOME/Downloads/youtube-dl/$spdir/%(title)s-%(id)s.%(ext)s"
+   mkdir -p ~/Downloads/youtube-dl
+   spdir=$(date +"%H%M%S")
+   mkdir -p ~/Downloads/youtube-dl/$spdir
+   echo "YouTube-DL... syntax $ ytdl http://www.yourvideo.com/path/entered/here.html"
+   echo "options -c, -i, and -format=best enabled."
+   . gcol yellow
+   echo "Saving video to $HOME/Downloads/youtube-dl/$spdir"
+   . gcol white
+   echo "Downloading video from $userinput"
+   echo "Press ctrl+c to interrupt"
+   youtube-dl -ci -f best "$1" -o "$HOME/Downloads/youtube-dl/$spdir/%(title)s-%(id)s.%(ext)s"
 }
-fytdl "$1"
+
+function fytdl_nodir() {
+   mkdir -p ~/Downloads/youtube-dl
+   echo "YouTube-DL... syntax $ ytdl http://www.yourvideo.com/path/entered/here.html"
+   echo "options -c, -i, and -format=best enabled."
+   . gcol yellow
+   echo "Saving video to $HOME/Downloads/youtube-dl"
+   . gcol white
+   echo "Downloading video from $userinput"
+   echo "Press ctrl+c to interrupt"
+   youtube-dl -ci -f best "$1" -o "$HOME/Downloads/youtube-dl/%(title)s-%(id)s.%(ext)s"
+}
+
+#read -p "Create a new folder the playlist or each URL?  Y|n: " folderoption
+fytdl "$userinput"
+. gcol yellow
+figlet 'downloaded'
+. gcol white
+
+exit 0
+
+      case ${folderoption} in
+            Y*|y*)
+                  . gcol red
+                  echo "Making new directories"
+                  . gcol white
+                  fytdl "$userinput"
+                  ;;
+#            N*|n*)
+             *)
+                  . gcol red
+                  echo "Skipping directory creation"
+                  . gcol white
+                  fytdl_nodir "$userinput"
+                  ;;
+#            *)
+#                  . gcol red
+#                  echo "error"
+#                  . gcol white
+#                  exit 1
+#                  ;;
+      esac
+
+. gcol yellow
+figlet 'downloaded'
+. gcol white
+

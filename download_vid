@@ -1,0 +1,93 @@
+#!/bin/bash
+get_videos_in_course() {
+count=0
+destination=$HOME/Downloads/CompTIA_Security_Docs/videos/$course
+mkdir -p $destination
+seq -w 1 $videocount | while read -r line; do
+   ((count++))
+   folder=$(( $count * 4 ))
+   ((video++))
+#correct the folder sequences
+   case $course$folder in
+      0220)
+        video=126787
+        ;;
+      0156)
+        folder=59
+        video=126786
+        ;;
+      018 | 0112 | 0116 | 0120 | 0340 | 0344 | 0348 | 0264 | 0336 | 0464)
+        folder=$(( $folder + 1 ))
+        ;;    
+      0124 | 0128 | 0132 | 0352 | 0356 | 0364)
+        folder=$(( $folder + 2 ))
+        ;;
+      0136 | 0140 | 0144 | 0148 | 0152 | 0360 | 0164)
+        folder=$(( $folder + 3 ))
+        ;;
+      0160)
+        folder=$(( $folder + 4 ))
+        ;;
+      *)
+        ;;
+   esac
+#name the course introductions correctly 
+   if [ $(( $videocount - $count )) -eq 0 ]; then
+        video=cs_syps_a${course}_overview
+   fi
+#pull the file
+   url="https://library.skillport.com/courseware/Content/cca/cs_syps_a${course}_it_enus/output/t${folder}/media/video/${video}-high.mp4"
+   curl -C - $url -o ${destination}/video_${course}_${line}_${folder}_${video}.mp4
+#reset counters for out of sequence video names
+   case $course$folder in
+      0220)
+        video=122357
+        ;;
+      0159)
+        video=122352
+        ;;
+     *)
+       ;;
+   esac
+done 
+}
+combine_videos() {
+rm $destination/mylist.txt
+ls -1 $destination | grep '.mp4' | grep -v 'Complete' | grep 'overview' | while read line; do
+   echo "file '$line'" >> $destination/mylist.txt 
+done
+ls -1 $destination | grep '.mp4' | grep -v 'Complete' | grep -v 'overview' | sort -d | while read -r line; do 
+   echo "file '$line'" >> $destination/mylist.txt 
+done
+ffmpeg -f concat -safe 0 -i $destination/mylist.txt -c copy $destination/Complete_Course_${course}.mp4
+rm $destination/mylist.txt
+}
+
+#seq 1 4 | while read -r line; do
+#course="0${line}"
+read -p "Enter two digit course number: " course
+case $course in
+   03)
+      videocount=16
+      video=122368
+      ;;
+   02)
+      videocount=17
+      video=122353
+      ;;
+   01)
+      videocount=16
+      video=122339
+      ;;
+   04)
+      videocount=17
+      video=122383
+      ;;
+   *)
+      echo "That course not yet supported"
+      exit
+      ;;
+esac
+get_videos_in_course
+combine_videos
+#done

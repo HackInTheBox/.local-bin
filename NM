@@ -1,0 +1,96 @@
+#!/bin/bash
+# NM stop|start
+
+# Starts networkmanager and all other network services after being disabled from a
+# test in kali linux or other os or app
+#
+#
+option="$*"
+. ifexists airmon-ng
+service_list="
+wpa_supplicant
+network-manager
+test
+"
+check2c=$(tail -n +2 <<<"$service_list")
+for line in $check2c; do
+   if [ ! -f "/usr/lib/systemd/system/${line}.service" ]; then
+      . gcol red
+      echo -n "ERROR!!! Missing $line"
+         . gcol white
+      echo " > Make sure your system configuration is correct."
+      read -p "Press (Y) to continue or (N) to exit: " yesno
+      case $yesno in
+            Y*|y*)
+                  echo "You may experience bugs."
+                  ;;
+            *)
+                  echo "Exiting..."
+                  exit 0
+                  ;;
+      esac
+              
+   fi
+done
+
+
+
+
+
+
+statusrep() {
+echo Status Check:
+
+echo network-manager: $(sudo systemctl status network-manager | grep 'Active:')
+echo wpa_supplicant: $(sudo systemctl status wpa_supplicant | grep 'Active:')
+}
+
+stopmon_script() {
+statusrep
+echo "Stopping internet services..."
+sudo systemctl stop wpa_supplicant
+sudo systemctl stop network-manager
+sudo systemctl disable wpa_supplicant
+sudo systemctl disable network-manager
+sudo airmon-ng start wlan0 | grep 'mode'
+
+statusrep
+}
+
+
+startmon_script() {
+statusrep
+echo "Starting internet services..."
+sudo airmon-ng stop wlan0mon | grep 'mode'
+sudo systemctl enable wpa_supplicant
+sudo systemctl start wpa_supplicant
+sudo systemctl enable network-manager
+sudo systemctl start network-manager
+statusrep
+}
+
+case $option in
+    start)
+        startmon_script
+        ;;
+    stop)
+        stopmon_script
+        ;;
+    *)
+        echo invalid option
+        exit 0
+        ;;
+esac
+
+exit 0
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,107 @@
+#!/bin/bash
+# vpnprep2
+# version 2 of vpnprep
+# vpnprep adds a text file to the middle of a ovpn file and then duplicates it to the orginal's folder.
+# vpnprep2 will download the current VPNGATE server listing into a csv file, then parse the best servers, decode the config file from base 64, make an ovpn file, then feed it into vpnprep, essentially automating the entire process.
+
+if [ ! $(uname -s) == "Linux" ]; then
+   echo 'This program only works on linux machines.  No version for mac yet.'
+   exit 0
+fi
+id10tck() {
+echo 'This program adds lines network-manager-gnome needs to make vpngate.net config files to work'
+read -p 'Your file needs to be from vpngate.net.  Proceed? Y|n:? ' yesno
+case $yesno in
+    Y*|y*)
+        echo
+        ;;
+    *)
+        echo Aborting...
+        exit 0
+        ;;
+esac
+}
+# Uncomment for user confirmation
+#id10tck
+
+mkdir -p ~/local
+mkdir -p ~/local/temp
+. ifexists gcol
+echo
+. gcol yellow
+echo "Downloading latest VPN configuration files..."
+. gcol white
+curl http://www.vpngate.net/api/iphone/ -o ~/local/temp/vpngate.csv
+
+
+#er1=$?
+#if [ $er1 != 0 ]; then
+# insert an error message and option here
+#fi
+
+timestamp() {
+date +"%B_%d"
+}
+
+
+prepfile() {
+# ~/local/bin/vpnprep.d/vpnprep.conf
+conf="$HOME/local/bin/vpnprep.d/vpnprep.conf"
+insert_flag='# The certificate file of the destination VPN Server.'
+uinpu="$*"
+extension="$(echo "$uinpu" | tail -c 6)"
+#echo "$extension"
+if [ ! -f "$conf" ]; then
+    echo "No configuration file found"
+    exit 2
+elif [ ! "$extension" == ".ovpn" ]; then
+    echo Enter a .ovpn file to modify
+    exit 1
+else
+    ready_to_cat=true
+fi
+
+modified_file=$(echo "$uinpu" | sed -E 's/\.ovpn$/-modified\.ovpn/g')
+c=$(sed -n '/The\scertificate\sfile\sof\sthe\sdestination\sVPN\sServer/=' "$uinpu")
+a=$(( $c - 3 ))
+b=$(( $a + 1 ))
+
+head -n $a "$uinpu" > "$modified_file"
+cat "$conf" >> "$modified_file"
+tail -n +$b "$uinpu" >> "$modified_file"
+
+echo -n "Created " 
+. gcol blue
+echo $modified_file
+. gcol white
+
+#exit 0
+# sed -n '/Databases/=' thegeekstuff.txt
+}
+
+
+VPNCODE64=$(cat ~/local/temp/vpngate.csv | awk -F ',' '{print $15}')
+echo "$VPNCODE64" > ~/local/temp/vpngate.csv.64
+
+
+arr=()
+while IFS= read -r line; do
+   arr+=("$line")
+done < ~/local/temp/vpngate.csv.64
+
+. gcol yellow
+echo "Creating VPN files..."
+. gcol white
+
+mkdir -p ~/vpn
+count=0
+seq 2 9 | while read line; do
+((count++))
+filename=~/vpn/vpn_file_$(timestamp)_${count}.ovpn
+echo -n ${arr[$line]} | base64 -d -i > ${filename}
+echo -n "Created "
+. gcol navy
+echo $filename
+. gcol white
+prepfile ${filename}
+done

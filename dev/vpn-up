@@ -1,0 +1,42 @@
+#!/bin/bash
+# vpn-up
+# pkexec /usr/sbin/openvpn --config /home/shawn/vpn/conf/vpn_one.ovpn
+# Check network connection to internet and if connected, verify
+# vpn is in service.  If disconnected, connect to vpn service.
+# vpn-manage
+
+
+# ping -i 1 -c 3 8.8.8.8
+logfile=/home/shawn/local/var/log/vpn-up.log
+true="echo -en \033[36m true \033[00m"
+false="echo -en \033[31m false \033[00m"
+vpnip=$(ip route | tail -n 1 | awk '{ print $1 }')
+myip=$(curl --connect-timeout 10 ifconfig.me/ip)
+if [ $? -ne 0 ]; then
+  #not connected to internet at all.  sleep and retry later.
+  internet_status="$false"
+  echo -n "internet_status:"; ($internet_status); echo
+  if [ -f $logfile ]; then
+    echo -n $(date); echo ": vpn-up.sh: No internet connection.  ifconfig.me failed." >> "$logfile"
+  fi
+  sleep 30
+else
+  internet_status="$true"
+  echo -n "internet_status:"; ($internet_status); echo
+  if [ $myip == $vpnip ]; then
+    #connected to internet and vpn.  all is good in the hood.
+    connection_status="$true"
+    echo -n "connection_status:"; ($connection_status); echo
+  else
+    #user is connected to internet but not vpn
+    connection_status="$false"
+    echo -n "connection_status:"; ($connection_status); echo
+    if [ -f $logfile ]; then
+      echo -n $(date); echo ": vpn-up.sh: Connected to internet but VPN failed.  Retrying vpn connection...." >> "$logfile"
+    fi
+    pkexec /usr/sbin/openvpn --verb 0 --config /home/shawn/vpn/conf/vpn_one.ovpn
+  fi
+
+#echo -n "internet_status:"; ($internet_status)
+#echo -n "connection_status:"; ($connection_status)
+fi

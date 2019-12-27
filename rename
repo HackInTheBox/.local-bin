@@ -1,0 +1,27 @@
+#!/bin/bash
+#rename
+
+
+rename_cert() {
+count=0
+#location='/home/shawn/Downloads/Network+_Skillsoft/certificates'
+read -p "Enter location: " location
+read -p "Enter New Name for sequence: " filename
+read -p "Enter extension with no dot or period: " extension
+
+ls -1 $location | while read line; do
+((count++))
+if [ $count -lt 10 ]; then
+   name="0${count}"
+else
+   name=$count
+fi
+#echo $name
+#echo "$line"
+cp "$location/$line" "$location/$filename_${name}.$extension"
+
+done
+
+}
+
+rename_cert

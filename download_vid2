@@ -1,0 +1,45 @@
+#!/bin/bash
+# find_videos
+
+# start with seed number
+# step 1) increment seed number by 1
+# step 2) increment folder from 1-100 ...check if exists summary url
+#    if it exists, download it, and go to step 1
+#    if it doesnt exist, check to see if the regular url exists
+#       if it does, download it and go to step 1
+#       if it doesn't, go to step 2
+#    if the folder gets to 100... exit in error
+
+#course=01-26
+#folder=1-100
+seed=122340
+line=1
+
+#line
+seq -w 1 26 | while read -r course; do
+seq $seed 123000 | while read video; do
+   destination=$HOME/Downloads/CompTIA_Security_Test/videos/$course
+   mkdir -p $destination
+   let "folderhittop = $folderhit + 8"
+   seq 1 8 | while read -r cycle; do
+      let "folder = $folder + 1"
+      echo folder $folder
+      echo course $course
+      echo line $line
+      echo video $video
+      echo folderhit $folderhit
+      url="https://library.skillport.com/courseware/Content/cca/cs_syps_a${course}_it_enus/output/t${folder}/media/video/${video}-high.mp4"
+      #curl -C - $url -o ${destination}/video_${course}_${line}_${folder}_${video}.mp4
+      targetsize=$(curl -L --post301 -s -o /dev/null -w '%{size_download}' $url)
+      if [ $targetsize -gt 5000 ]; then
+         echo ${destination}/video_${course}_${line}_${folder}_${video}.test
+         export folderhit=$folder
+         echo $folderhit
+         break 2
+      fi
+done
+   done
+done
+
+
+

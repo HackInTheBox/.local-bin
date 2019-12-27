@@ -1,0 +1,40 @@
+#!/bin/bash
+# basha
+# copy all login-shell enviornment scripts from main user to root user
+
+. ifexists gcol
+
+if [ "$SET_VARIABLES" == "true" ]; then
+    home_path=$HOMEPATH
+    root_path=$ROOTPATH
+else
+    echo "This script only works with the HackInTheBox .bash_variables script enabled."
+    echo "Please make sure it has been run from .bashrc"
+fi
+
+copy_files() {
+cat $BASH_DOC_LIST | while read line; do
+    if [ -f ${home_path}/$line ]; then
+        sudo cp -v ${home_path}/$line ${root_path}/$line 2>/dev/null
+        error_code=$?
+        if [ $error_code -ne 0 ]; then
+            . gcol red
+            echo -ne "\tError copying "
+            . gcol white
+            echo -n "$(basename $line) !!"
+            . gcol red
+            echo " Code $error_code"
+            . gcol white
+        fi 
+    fi
+done
+}
+
+if [ $BASH_DOC_LIST != '' ]; then
+   copy_files
+else
+   echo "Error loading list of files to copy.  Please check script."
+fi   
+   
+   
+echo

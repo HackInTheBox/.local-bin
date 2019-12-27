@@ -1,0 +1,20 @@
+#!/bin/bash
+# remove_vpns
+
+#remove all vpn profiles from Network Manager loaded in
+vpn_count=0
+
+nmcli connection show | sort -r | grep 'vpn' | while read -r line; do
+   ((vpn_count++))
+   if [ ${vpn_count} -gt 0 ]; then
+      connection_type=$(echo "${line}" | awk '{ print $3 }')
+      connection_id=$(echo "${line}" | awk '{ print $2 }')
+      connection_name=$(echo "${line}" | awk '{ print $1 }')
+
+      if [ "${connection_type}" == "vpn" ]; then
+         remove_profile=TRUE
+         sudo nmcli connection delete "${connection_id}"
+      fi
+   fi
+
+done

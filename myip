@@ -1,0 +1,52 @@
+#!/bin/bash
+# myip
+# return the public IP Addresss of the machine
+
+. ifexists curl
+. ifexists gcol
+. ifexists dig
+
+
+#echo "Connecting..."
+# List available interfaces, their states, and local IP's
+ip -br -c a
+
+IP=$(dig +short +timeout=3 myip.opendns.com @resolver1.opendns.com 2>/dev/null) 
+MORE_INFO=$(curl --connect-timeout 3 ifconfig.me/all 2>/dev/null)
+
+print_opendns() {
+if [ $IP ]; then
+   . gcol blue
+   echo -n "Public IPv4: "
+   . gcol purple; echo -e "\t\t\t${IP}"; . gcol white
+else
+   . gcol red
+   echo "Could not connect to opendns.com for IPv4 address"
+   . gcol white
+fi
+}
+
+print_ifconfig() {
+if [ "${MORE_INFO}" ]; then
+
+   TOP_LINE=$(echo "${MORE_INFO}" | grep 'ip_addr')
+   TOP_LINE_FIRST=$(echo -n $TOP_LINE | awk '{ print $1 }')
+   TOP_LINE_SECOND=$(echo $TOP_LINE | awk '{ print $2 }')
+   . gcol blue
+   echo -n "$TOP_LINE_FIRST "
+   . gcol purple
+   echo -e "\t\t\t$TOP_LINE_SECOND"
+   . gcol white
+   echo "${MORE_INFO}" | grep -v 'ip_addr' | while read -r line; do
+      echo "   ${line}"
+   done
+else
+   . gcol red
+   echo "Could not connect to ifconfig.me for host data.  Check connection."
+   . gcol white
+fi
+}
+
+print_opendns
+#print_ifconfig
+

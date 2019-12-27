@@ -1,7 +1,10 @@
 #!/bin/bash
+blue() { echo -en '\033[36m'; }
+red() { echo -en '\033[31m'; }
+white() { echo -en '\033[00m'; }
 
-me="$(echo $(users) | awk '{ print $1 }')"
-dest=/home/"$me"/.bash_aliases
+me=$ME
+dest=$HOMEPATH/.bash_aliases
 
 newbashsh(){
 if [ ! -f "$dest" ]; then
@@ -15,12 +18,12 @@ fi
 
 cnam=$(echo "alias $*" | awk -F\= '{ print $1 }')  
 funn=$(echo "alias $*" | awk -F\= '{ print $2 }')  
-
+. gcol yellow
 glob=$(echo -E "$cnam"\=\'"$funn"\')
-echo; echo "$glob"; echo
-
-read -p "Press Y|n to accept the entry to $dest: " yesno
-
+echo; echo "$glob"
+. gcol white
+echo -n "Press "; . gcol green; echo -n "(Y"; . gcol white; echo -n "|"; . gcol yellow; echo -n "n) "; . gcol white; echo -n "to accept the entry to "; . gcol navy; read -p "$dest: " yesno
+. gcol white
     case $yesno in
             y*|Y*)
                     echo "$glob" >> "$dest"
@@ -30,7 +33,23 @@ read -p "Press Y|n to accept the entry to $dest: " yesno
                         exit $erck
                     fi
                     echo; echo "$glob"
-                    echo "was created.  Type 'exec bash' and 'alias -p' to view the new command"
+                    echo -n "was created.  Type "
+                    . gcol yellow
+                    echo -n 'basha '
+                    white
+                    echo "to clone to root user, "
+                    . gcol yellow
+                    echo -n 'exec bash ' 
+                    white
+                    echo -n "and [ "
+                    . gcol yellow
+                    echo -n 'bashlist ' 
+                    white
+                    echo -n "| "
+                    . gcol yellow
+                    echo -n 'alias -p ' 
+                    white
+                    echo "] to view the new command"
                     ;;
             *)
                     echo "Aborting..."

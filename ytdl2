@@ -1,0 +1,13 @@
+#!/bin/bash
+# ytdl2
+# syntax:
+# ytdl2 'https://www.youtube.com/playlist?list=49S3nxL4B6aMFDQ8_gdxAy'
+url="$1"
+mkdir -p $HOME/local/tmp
+tempfile=$HOME/local/tmp/ytdl2.html
+curl "${url}" > "${tempfile}"
+listtitle="$(cat "${tempfile}" | grep '<title>' | sed 's/<title>//g'| sed 's/<\/title>//g' | sed 's/^\s*//g' | sed 's/ /_/g')"
+folder="$HOME/Downloads/youtube-dl/${listtitle}"
+mkdir -p $folder
+youtube-dl -o "${folder}/%(playlist_index)s_%(title)s" "${url}"
+rm "$tempfile"

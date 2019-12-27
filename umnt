@@ -1,0 +1,153 @@
+#!/bin/bash
+# mnt
+# mnt <partition number>
+# mount the partition containing home directory of host:swift user:shawn
+
+if [ "$SET_VARIABLES" == "true" ]; then
+    . ifexists gcol
+else
+    echo "Please be sure all bash environment documents are in place. This script uses a shell script called 'gcol' for alerts and errors. Check your .bash_aliases .bash_profile and .bashrc scripts as well as your PATH variables, /home/user/local/bin directory, and be sure proper permissions have been assigned.  For more details, see the HackInTheBox script package manual."
+fi
+
+
+
+mnt_dump=$(cat /proc/mounts)
+partitions=$(echo "$mnt_dump" | grep '/media/' | awk '{ print $2 }' | sort -d)
+#echo "$partitions" | column -t
+#exit
+#partitions=$(lsblk -l -o NAME,TYPE | grep ' part' | awk '{ print $1 }'| sort -d)
+
+whip_part() {
+    unset count
+    for line in $partitions; do
+        ((count++))
+        menuentries="$menuentries$count $line "
+    done
+    choicepart=$(whiptail --menu "Choose a Partition to unmount" 20 40 12 $menuentries 3>&1 1>&2 2>&3)
+    if [ "$choicepart" ]; then
+        mounttarget=$(echo "$partitions" | head -n $choicepart | tail -n 1)
+    else
+        . gcol yellow
+        echo "Cancelled"
+        . gcol white
+        exit 0
+    fi
+}
+
+# Funciton whip_path is not needed for unmount
+# whip_path() {
+#     userlist=$(echo $(whoami) $(users) | sed -E 's/\s/\n/g' | sort -u )
+#     unset count
+#     for line in $userlist; do
+#         ((count++))
+#         menuuser="$menuuser$count $line "
+#     done
+#     choicepathnumber=$(whiptail --menu "Choose a user for mount folder:" 20 40 12 $menuuser 3>&1 1>&2 2>&3)
+#     if [ "$choicepathnumber" ]; then
+#         choicepath=$(echo "$userlist" | head -n $choicepathnumber | tail -n 1)
+#     else
+#         . gcol yellow
+#         echo "Cancelled"
+#         . gcol white
+#         exit 0
+#     fi
+# }
+
+# #function make_dirs not needed for unmount
+# make_dirs() {
+#     . gcol yellow
+#     if [ -d /media/$choicepath/$mounttarget ]; then
+#         path_exists=true
+#     elif [ -d /media/$choicepath ]; then
+#         sudo mkdir -p /media/$choicepath/$mounttarget
+#         sudo chown $choicepath:$choicepath /media/$choicepath/$mounttarget /media/$choicepath
+#     else
+#         sudo mkdir -p /media/$choicepath
+#         sudo mkdir -p /media/$choicepath/$mounttarget
+#         sudo chown $choicepath:$choicepath /media/$choicepath/$mounttarget /media/$choicepath
+#     fi
+#     . gcol white
+# }
+# 
+
+#mount_dev() { 
+unmount_dev() { 
+    . gcol yellow   
+   #if [ -a /dev/$mounttarget ]; then
+    if [ -a $mounttarget ]; then
+        #sudo mount /dev/$mounttarget /media/$choicepath/$mounttarget
+        sudo umount $mounttarget
+        if [ $? == 0 ]; then
+            . gcol blue
+            blkglob=$(lsblk)
+            search_string=$(basename $mounttarget)
+            highlight_change=$(echo "$blkglob" | awk "/$search_string/{ print NR; exit }")
+
+#echo $highlight_change
+#exit            
+            echo "$blkglob" | head -n $(($highlight_change - 1))
+            . gcol yellow
+            changed=$(echo -n "$blkglob" | head -n $highlight_change | tail -n 1)
+            echo "${changed}<----- unmounted"
+            . gcol blue
+            echo "$blkglob" | tail -n +$(($highlight_change + 1))
+        fi
+    else
+        echo ERROR
+        . gcol yellow
+        echo "$mounttarget is not a valid unmount option."
+        . gcol white
+        exit 1
+    fi
+        . gcol white
+}
+
+rm_x-dirs() {
+    alias rm=rm
+    
+    media_folder_lev01=$(ls -1Ap --color=none /media | grep '\/' | sed -E 's/^/\/media\//')
+    unset media_folders
+    #media_folders=$media_folder_lev01
+    for line in $media_folder_lev01; do
+       #echo line
+       #echo $line
+       subfolder=$(ls -1Ap --color=none $line | grep '\/' | sed -E 's,^,'"$line"',')
+       #echo subfolder
+       #echo $subfolder
+       media_folders=$(echo "$media_folders"; echo "$subfolder")
+      
+    done
+    media_folders=$(echo -n "$media_folder_lev01"; echo "$media_folders")
+   #echo "***********************************"
+    #echo "$media_folders"
+    #media_folders=$(sudo du -d 2 -h /media | grep '/media/' | awk '{ print $2 }' | sort -dr)
+    #echo "$media_folders"
+    echo "$media_folders" | while read line; do
+        sudo rm -d $line 2>/dev/null
+        done
+}
+
+
+whip_part
+#whip_path
+#make_dirs
+#mount_dev
+unmount_dev
+rm_x-dirs
+
+#check to see if partition is attached
+#set the correct pathname
+    #check the user id
+#see if pathname already exists
+#create it with correct permissions and ownerships if not
+#mount the partition
+#set unmount procedure
+    #see if partition is mounted
+    #get the pathname
+    #unmount the drive
+    #delete the empty folders
+
+
+
+
+

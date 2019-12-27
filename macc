@@ -3,52 +3,117 @@
 #return current mac addresses of internet interfaces then
 #  change them to a random address from the same manufacturer
 
-echo 'Current mac-address assigned physical interfaces:'
-#macdump() { 
+
+
 #######################################
-
-ifexists() {
-hash $1
-if [ $? == 0 ]; then
-  echo $1 installed
-  else
-  echo Error. Please install $1 and retry
-  exit 1
-  fi
-}
-
-ifexists figlet
-ifexists macchanger
-#ifexists lkjslsss
+if [ "$SET_VARIABLES" == "true" ]; then
+   if [ -f $HOMEPATH/local/bin/ifexists ]; then
+      . ifexists rfkill
+      . ifexists ifconfig
+      . ifexists macchanger
+      . ifexists gcol
+   fi
+else
+   echo "Missing depends for the shell environment"
+   echo "Script may by wonky !"
+fi
 
 
-a=0
-b=$(ifconfig)
-t="/home/shawn/local/tmp/macc-tmp.txt"
-$null>"$t"
+
+if [ "$(rfkill list | grep 'yes')" ]; then
+   . gcol red
+   echo -n "WARNING: "
+   . gcol white
+   echo -e "rfkill shows interfaces \neither hard-blocked or soft-blocked."
+   echo "Script may not run as intended."
+   . gcol yellow
+   rfkill -r | column -t | grep 'DEVICE'
+   . gcol white
+   rfkill -r | column -t | grep -v 'DEVICE'
+   echo; read -p "(C)ontinue as is? (A)bort Command? or (U)nblock All?  C|A|U " yesno
+   case $yesno in
+     C|c)
+            echo -e "Proceeding with MacChanged as is\n"
+            ;;
+     A|a)
+            echo "Aborting..."
+            exit 0
+            ;;
+     U|u)
+            echo -e "Running 'rfkill unblock all'...\n"
+            rfkill unblock all
+            . gcol yellow
+            rfkill -r | column -t | grep 'DEVICE'
+            . gcol white
+            rfkill -r | column -t | grep -v 'DEVICE'
+            ;;
+      *)
+            echo "Invalid choice.  Aborting."
+            exit 0
+            ;;
+    esac
+   
+fi
+
 printlist() {
-echo "$b" | grep 'ether' | awk '{ print $2 }' | while read macadr;
-do
-ifadr=$(echo "$b" | grep -B 6 "$macadr" | grep 'flags' | awk '{ print $1 }' | sed 's/://g')
-echo -e "$ifadr\t $macadr" | tee -a "$t"
+#show current mac addresses for each interface
+ip -br a | awk '{ print $1 }' | while read line; do
+    . gcol navy
+    echo -e "Interface: $line"
+    . gcol white
+    macchanger -s $line 2>/dev/null | grep 'Current' | awk '{ print $1, " ", $2, " ", $3 }'
+   #macchanger -s $line 2>/dev/null | grep 'Current' | awk '{ printf $1; printf " "; printf $2; printf "  "; print $3 }'
+    if [ ! $? == 0 ]; then
+      "Could not return MAC Address."
+    fi
 done
 }
-#}
+
+
 #######################################
-figlet "start:"
-printlist
-figlet "authorizing"
+. gcol green
+echo -e "\nstart:"
+. gcol white
+printlist | column -t
+. gcol red
+echo -e "\nauthorizing..."
+. gcol white
 sudo echo ""
-figlet "spoofing..."
-cat $t | while read line; do
-ifa="$( echo $line | awk '{ print $1 }' )"
-echo ""; echo "Interface:    $ifa"
-sudo ifconfig "$ifa" down
-sudo macchanger -e "$ifa"
-sudo ifconfig "$ifa" up
+. gcol green
+echo -n "spoofing..."
+. gcol white
+
+spoofer() {
+ip -br a | awk '{ print $1 }' | while read line; do
+    . gcol yellow
+    echo -e "\nInterface:    $line"
+    . gcol white
+    sudo ifconfig "$line" down 2>/dev/null
+    unset previous_step
+    sudo macchanger -e $line 2>/dev/null | awk '{ print $1, " ", $2, " ", $3 }' | while read steps; do
+        if [ "$steps" == "Network didn't change" ]; then
+            . gcol red
+            # waiting for this error to pop back up so i can finish the script!!
+            echo "Error! Network didn't actually change the MAC address!"
+            . gcol white
+        else
+            echo "$steps"
+        fi
+    done
+    sudo ifconfig "$line" up 2>/dev/null
 done
-figlet "currently:"
-b=$(ifconfig)
-printlist
-figlet "MacChanged!"
+}
+
+spoofer | column -t
+. gcol green
+echo -e "\nNew Mac Address"
+. gcol white
+printlist | column -t
+. gcol blue
+echo "MACCHANGED!"
+echo -e "\n"
+. gcol white
+
 exit 0
+
+

@@ -1,0 +1,105 @@
+#!/bin/bash
+# gcol $1
+#
+#  _                _    _       _   _          _               
+# | |__   __ _  ___| | _(_)_ __ | |_| |__   ___| |__   _____  __
+# | '_ \ / _` |/ __| |/ / | '_ \| __| '_ \ / _ \ '_ \ / _ \ \/ /
+# | | | | (_| | (__|   <| | | | | |_| | | |  __/ |_) | (_) >  < 
+# |_| |_|\__,_|\___|_|\_\_|_| |_|\__|_| |_|\___|_.__/ \___/_/\_\
+#
+#	(c) 2019 hackInTheBox@professionalidiot.com
+#
+#
+# other scripts can call this "library" to easily incorporate colored text
+#
+requested_color=$1
+if [ ! $requested_color ]; then
+    echo "Error.  No color name passed as an argument."
+fi
+
+case $requested_color in
+    blue)
+            echo -en '\033[36m'
+            ;;
+    red)
+            echo -en '\033[31m'
+            ;;
+    white)
+            echo -en '\033[00m'
+            ;;
+    yellow)
+            echo -en '\033[33m'
+            ;;
+    green)
+            echo -en '\033[32m'
+            ;;
+    navy)
+            echo -en '\033[34m'
+            ;;
+    purple)
+            echo -en '\033[35m'
+            ;;
+    bold-blue)
+            echo -en '\033[01m'
+            ;;
+    bold-navy)
+            echo -en '\033[02m'
+            ;;
+    italic-bold-navy)
+            echo -en '\033[03m'
+            ;;
+    underline-italic-bold-navy)
+            echo -en '\033[04m'
+            ;;
+    blinking-underline-italic-bold-navy)
+            echo -en '\033[05m'
+            ;;
+    crossed-white)
+            echo -en '\033[28m'
+            ;;
+    gray)
+            echo -en '\033[90m'
+            ;;
+    background-red)
+            echo -en '\033[41m'
+            ;;
+    background-green)
+            echo -en '\033[42m'
+            ;;
+    background-yellow)
+            echo -en '\033[43m'
+            ;;
+    background-navy)
+            echo -en '\033[44m'
+            ;;
+    background-purple)
+            echo -en '\033[45m'
+            ;;
+    background-blue)
+            echo -en '\033[46m'
+            ;;
+    background-white)
+            echo -en '\033[47m'
+            ;;
+
+#    your_color)
+#            echo -en '\123[456'
+#            ;;
+    *)
+            # If no defined entry is given, default to white.
+            echo -en '\033[00m'
+            ;;
+esac
+
+
+
+
+
+
+
+
+
+
+
+
+

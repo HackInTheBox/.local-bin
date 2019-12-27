@@ -1,0 +1,16 @@
+#!/bin/bash
+# fizzbuzz
+seq 100 | while read DIGIT; do
+RESULT=$DIGIT
+if [ $(($DIGIT % 3)) -eq 0 ]; then
+   RESULT=fizz
+fi
+if [ $(($DIGIT % 5)) -eq 0 ]; then
+   RESULT=buzz
+fi
+if [ $(($DIGIT % 15)) -eq 0 ]; then
+   RESULT=fizzbuzz
+fi
+echo "($DIGIT) $RESULT"
+done
+
