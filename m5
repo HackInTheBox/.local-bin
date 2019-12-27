@@ -1,9 +1,19 @@
 #!/bin/bash
-# "m5.sh"
-#convert a string into an md5sum and print to stdout
-# work in progress:  copy to clipboard automatically
-# and based on the input, iterate the hash often, but
-# able to replicate
+# m5
+# syntax: m5 string_to_hash_with_no_spaces number_of_iterations
+# example: m5 password 500
+# output: 76b99d8321c6cb909e45761d4ba7596a
+#
+# This script works as a 'key stretcher'
+# Input your weak but memorable password and hash it thousands of times.
+# What you get is a pseudo-random hex value (md5 hash) of your weak password, which, when used correctly,
+#    will be a stronger key.
+#
+# md5 hashes have been calculated for MANY values.  Still.. use strong initial inputs and MANY iterations
+#    you have been warned!
+#
+# Remember to add a space before "m5" so it does not save to bash-history
+# OR edit this script to be interactive so your direct inputs are not recorded
 
 unhashed="$1"
 originput="$1"
