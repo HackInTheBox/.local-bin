@@ -3,51 +3,51 @@
 #convert a string into an md5sum and print to stdout
 # work in progress:  copy to clipboard automatically
 # and based on the input, iterate the hash often, but
-# albe to replicate
+# able to replicate
 
 unhashed="$1"
 originput="$1"
 loops="$2"
+. ifexists gcol
 
 if [ "$2" ]; then
-errck=pass
+   errck=pass
 else
-echo Error... include string then number of iterations && exit 1
+   echo Error... include string then number of iterations && exit 1
 fi
 
-doop() { 
-sum=$(printf '%s' "$unhashed" | md5sum | cut -d ' ' -f 1)
-echo -n $sum
-}
-
-seq $loops | while read n; do
-temphash=$(doop "$unhashed")
-unhashed=$temphash
-if [ $n == $loops ]; then
-echo "Final Result of $loops iterations of string $originput"
-echo $unhashed
+if [ "$3" ]; then
+   echo "Error... this script does not accept spaces in the input at this time." && exit 1
+   errck=fail
+else
+   errck=pass
 fi
-done
-exit 0
 
 
 
-case $char in
-'1'); loops=5 ; ;;
-'2'); loops=6 ; ;;
-'3'); loops=7 ; ;;
-'4'); loops=8 ; ;;
-'5'); loops=9 ; ;;
-'6'); loops=10 ; ;;
-'7'); loops=11 ; ;;
-'8'); loops=12 ; ;;
-'9'); loops=13 ; ;;
-'0'); loops=14 ; ;;
-'a'); loops=15 ; ;;
-'b'); loops=16 ; ;;
-'c'); loops=17 ; ;;
-'d'); loops=18 ; ;;
-'e'); loops=19 ; ;;
-'f'); loops=20 ; ;;
-'*'); echo error; exit 1; ;;
-esac
+starttime=$(date +%s)
+while read n; do
+newhash=$(echo -n "$unhashed" | md5sum | cut -d ' ' -f 1)
+unhashed=$newhash
+done <<< $(seq $loops)
+stoptime=$(date +%s)
+
+. gcol red
+echo -n "$loops " 
+. gcol blue
+echo -n "iterations of "
+. gcol red
+echo -n "$originput "
+. gcol blue
+echo "is"
+. gcol yellow
+echo "$newhash"
+. gcol blue
+timelen=$(( $stoptime - $starttime ))
+if [ ${timelen} == 1 ]; then
+   timeunit='second'
+else
+   timeunit='seconds'
+fi
+echo '('Computed in ${timelen} ${timeunit}')'
+. gcol white
