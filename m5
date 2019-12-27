@@ -25,21 +25,21 @@ fi
 
 
 linuxhash() {
-starttime=$(date +%s)
-while read n; do
-newhash=$(echo -n "$unhashed" | md5sum | cut -d ' ' -f 1)
-unhashed=$newhash
-done <<< $(seq $loops)
-stoptime=$(date +%s)
+   starttime=$(date +%s)
+   while read n; do
+      newhash=$(echo -n "$unhashed" | md5sum | cut -d ' ' -f 1)
+      unhashed=$newhash
+   done <<< $(seq $loops)
+   stoptime=$(date +%s)
 }
 
 darwinhash() {
-starttime=$(date +%s)
-while read n; do
-newhash=$(echo -n "$unhashed" | md5 | cut -d ' ' -f 1)
-unhashed=$newhash
-done <<< $(seq $loops)
-stoptime=$(date +%s)
+   starttime=$(date +%s)
+   while read n; do
+      newhash=$(echo -n "$unhashed" | md5 | cut -d ' ' -f 1)
+      unhashed=$newhash
+   done <<< $(seq $loops)
+   stoptime=$(date +%s)
 }
 
 
