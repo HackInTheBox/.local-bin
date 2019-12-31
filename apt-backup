@@ -34,6 +34,23 @@ if [ $? -ne 0 ]; then
     exit 0
 fi
 
+#Functionaity for snap in ubuntu
+addsnap() {
+hash snap
+errck=$?
+if [ $errck == 0 ]; then
+   echo
+   echo -e "# **************************************************************************\n#"
+   echo "# INSTALLED SNAP PACKAGES"
+   echo "#"
+   snap list
+   echo
+   echo "<reached end of file>"
+else
+   echo
+   echo "No snap functionality detected.  Skipping snap packages..."
+fi
+}
 
 blue() { echo -en \033[36m; }
 red() { echo -en \033[31m; }
@@ -143,6 +160,7 @@ teemaster() {
    execute_sourcelist
    execute_ppa
    execute_manuals
+   addsnap
 }
 
 teemaster | tee "$fullpath_to_backup"
