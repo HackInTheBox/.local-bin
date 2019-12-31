@@ -1,3 +1,0 @@
-#!/bin/bash
-ls -1p $* | grep '\/' | sed 's/\///g'
-exit 0
