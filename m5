@@ -34,6 +34,8 @@ else
 fi
 
 
+echo $last_command
+exit
 linuxhash() {
    starttime=$(date +%s)
    while read n; do
@@ -51,7 +53,6 @@ darwinhash() {
    done <<< $(seq $loops)
    stoptime=$(date +%s)
 }
-
 
 platformtype=$(uname -s)
 case $platformtype in
