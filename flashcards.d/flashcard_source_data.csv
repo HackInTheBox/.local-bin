@@ -1,0 +1,614 @@
+ID,NAME,DEFINITION
+066,2G,Second Generation
+459,3DES,Triple Digital Encryption Standard
+067,3G,Third Generation
+068,4G,Fourth Generation
+069,5G,Fifth Generation
+088,A,IPv4 Address Record
+146,AAA,Authentication Authorization and Accounting
+089,AAAA,IPv6 Address Record
+303,AAAA,Authentication Authorization Accounting and Auditing
+460,ABAC,Attribute-based Access Control
+288,ACK,Acknowledgement
+245,ACL,Access Control List
+173,ADSL,Asynchronous Digital Subscriber Line
+461,AES,Advanced Encryption Standard
+462,AES256,Advanced Encryption Standards 256bit
+214,AH,Authentication Header
+463,ALE,Annualized Loss Expectancy
+034,AP,Access Point
+117,APC,Angled Polished Connector / Angled Physical Contact
+464,API,Application Programming Interface
+302,APIPA,Automatic Private IP Addressing
+265,APT,Advanced Persistent Threat
+222,ARD,Apple Remote Desktop
+304,ARIN,American Registry for Internet Numbers
+465,ARO,Annualized Rate of Occurrence
+257,ARP,Address Resolution Protocol
+031,AS,Autonomous Systems
+291,ASCII,American Standard Code for Information Interchange
+133,ASIC,Application Specific Integrated Circuit
+466,ASLR,Address Space Layout Randomization
+105,ASM,Address Space Management
+305,ASP,Application Service Provider
+181,ATM,Asynchronous Transfer Mode
+229,AUP,Acceptable Use Policy
+308,Auto-MDX,Automatic Medium-Dependent Interface Crossover
+467,AV,Antivirus / Asset Value
+468,BAC,Business Availability Center
+309,BCP,Business Continuity Plan
+008,BEAST,Browser Exploit Against SSL and TLS
+211,BER,Bit Error Rate
+310,BERT,Bit Error Rate Test
+030,BGP,Border Gateway Protocol
+469,BIA,Business Impact Analysis
+125,BiDi,Bi Directional
+470,BIOS,Basic Input / Output System
+311,BLE,Bluetooth Low Energy
+113,BNC,British Naval Connector / Boyonet Niell-Concelman
+312,BootP,Boot Protocol / Bootstrap Protocol
+471,BPA,Business Partners Agreement
+472,BPDU,Bridge Protocol Data Unit
+168,BRI,Basic Rate Interface
+313,BSSID,Basic Service Set Identifier
+045,BT,Bluetooth
+227,BYOD,Bring Your Own Device
+473,CA,Certificate Authority
+314,CaaS,Communication as a Service
+474,CAC,Common Access Card
+315,CAM ,Content Addressable Memory
+041,CAN,Campus Area Network / Controller Area Network
+475,CAPTCHA,Completely Automated Public Turing Test to Tell Computers and Humans Apart
+476,CAR,Corrective Action Report
+316,CARP,Common Address Redundancy Protocol
+317,CASB,Cloud Access Security Broker
+109,CAT,Category
+477,CBC,Cipher Block Chaining
+250,CCMP,Counter Mode Cipher Block Chaining Message Authentication Code Protocol
+318,CCTV,Closed Circuit Television
+063,CDMA,Code Division Multiple Access
+478,CER,Cross-over Error Rate
+479,CERT,Computer Emergency Response Team
+480,CFB,Cipher Feedback
+319,CHAP,Challenge Handshake Authentication Protocol
+271,CIA,Confidentiality Integrity Accessibility
+025,CIDR,Classless Inter-Domain Routing
+158,CIFS,Common Internet File System
+481,CIO,Chief Information Officer
+482,CIRT,Computer Incident Response Team
+483,CMS,Content Management System
+099,CNAME,Cannonical Name
+484,COOP,Continuity of Operations Plan
+485,COPE,Corporate Owned Personally Enabled
+298,CoS,Class of Service
+486,CP,Contingency Planning
+184,CPE,Customer Premises Equipment
+212,CPU,Central Processing Unit
+293,CR/LF,Carriage Return/Line Feed
+320,CRAM-MD5,Challenge REsponse Authentication Mechanism-Message Digest 5
+487,CRC,Cyclical Redundancy Check
+488,CRL,Certificate Revocation List
+102,CRM,Customer Relationship Management
+489,CSIRT,Computer Security Incident Response Team
+294,CSMA-CA/CD,Carrier Sense Multiple Access Collision Avoidance/Collision Detection
+490,CSO,Chief Security Officer
+491,CSP,Cloud Service Provider
+492,CSR,Certificate Signing Request
+493,CSRF,Cross-site Request Forgery
+191,CSU,Channel Service Unit
+494,CTM,Counter-Mode
+495,CTO,Chief Technology Officer
+496,CTR,Counter
+322,CVE,Common Vulnerabilities and Exposures
+323,CVW,Collaborative Virtual Workspace
+324,CWDM,Coarse Wave Division Multiplexing
+497,CYOD,Choose Your Own Device
+064,D-AMPS,Digital Advanced Mobile Phone Service
+325,DaaS,Desktop as a Service
+498,DAC,Discretionary Access Control
+156,DAS,Direct Attached Storage
+263,dB,Decibels
+499,DBA,Database Administrator
+326,DCS,Distributed Computer System
+327,DDoS,Distributed Denial of Service
+500,DEP,Data Execution Prevention
+501,DER,Distinguished Encoding Rules
+020,DES,Data Encryption Standard / Digital Encryption Standard
+502,DFIR,Digital Forensics and Investigation Response
+100,DHCP,Dynamic Host Configuration Protocol
+503,DHE,Diffie-Hellman Ephemeral / Data Handling Electronics
+297,DiffServ,Differentiated Services
+098,DKIM,Domain Keys Identified Mail
+180,DLCI,Data Link Connection Identfier
+504,DLL,Dynamic Link Library
+230,DLP,Data Loss Protection
+328,DLR,Device Level Ring
+188,DMVPN,Dynamic Multipoint Virtual Private Network
+142,DMZ,Demilitarized Zone
+329,DNAT,Destination Network Address Translation
+082,DNS,Domain Name Service / Server
+007,DNSSEC,Domain Name System Security Extensions
+176,DOCSIS,Data Over Cable Service Interface Specifications
+002,DoS,Denial of Service
+330,DPI,Deep Packet Inspection / Dots Per Inch
+331,DR ,Designated Router
+505,DRP,Disaster Recovery Plan
+506,DSA,Digital Signature Algorithm
+332,DSCP,Differentiated Services Code Point
+170,DSL,Digital Subscriber Line
+333,DSSS,Direct Sequence Spread Spectrum
+192,DSU,Data Service Unit
+217,DTLS,Datagram Transport Layer Security
+334,DWDM,Dense Wavelength Division Multiplexing
+335,E1,E-Carrier Level 1
+241,EAP,Extensible Authentication Protocol
+292,EBCDIC,Extended Binary Coded Decimal Interchange Code
+507,ECB,Electronic Code Book
+508,ECC,Elliptic Curve Cryptography
+509,ECDHE,Elliptic Curve Diffie-Hellman Ephemeral
+510,ECDSA,Elliptic Curve Digital Signature Algorithm
+336,EDNS,Extension Mechanisms for Dynamic Name Services
+511,EF,Exposure Factor
+512,EFS,Encrypted File System
+337,EGP,Exterior Gateway Protocol
+128,EIA,Electronics Industry Association
+029,EIGRP,Enhanced Interior Gateway Routing Protocol
+267,EK,Exploit Kits
+183,ELSR,Edge Label Switch Router
+072,EM,Electromagnetic
+073,EMI,Electromagnetic Interference
+513,EMP,Electro Magnetic Pulse
+514,EOL,End of Life
+515,ERP,Enterprise Resource Planning
+338,ESD,Electrostatic Discharge
+516,ESN,Electronic Serial Number
+517,ESP,Encapsulated Security Payload
+339,ESSID,Extended Service Set Identifier
+340,EUI,Extended Unique Identifier
+518,EULA,End User License Agreement
+519,FACL,File System Access Control List
+270,FAIR,Factor Analysis Information Risk
+520,FAR,False Acceptance Rate
+251,FAST,Flexible Authentication via Secure Tunnelling
+341,FC,Fiber Channel
+162,FCIP,Fiber Channel Over IP
+163,FCoE,Fiber Channel Over Ethernet
+521,FDE,Full Disk Encryption
+342,FDP,Frequency Division Multiplexing
+260,FEXT,Far End Cross Talk
+343,FHSS,Frequency Hopping Spread Spectrum
+344,FM,Frequency Modulation
+083,FQDN,Fully Qualified Domain Name
+522,FRR,False Rejection Rate
+345,FSF,Free Software Foundation
+523,FTP,File Transfer Protocol
+268,FTP ,File Transfer Protocol
+280,FTPS,File Transfer Protocol over Secure Sockets Layer (SSL)
+058,GB,Gigabyte
+059,Gb,Gigabit
+123,GBIC,Gigabit Interface Converter
+060,Gbps,Gigabits Per Second
+524,GCM,Galois Counter Mode
+051,GHz,Gigahertz
+346,GLBP,Gateway Load Balancing Protocol
+032,GLR,Gateway of Last Resort
+347,GNU,GNU's Not Unix
+348,GPG,GNU Privacy Guard
+525,GPO,Group Policy Object
+240,GPS,Global Positioning System
+526,GPU,Graphic Processing Unit
+349,GRE,Generic Routing Encapsulation
+061,GSM,Global System for Mobile Communication
+350,HA,High Availability
+165,HBA,Host Bus Adapter
+205,HDD,Hard Disk Drive
+351,HDLC,High Level Data Link Control
+352,HDMI,High Definition Multimedia Interface
+048,HF,High Frequency
+527,HIDS,Host-based Intrusion Detection System
+528,HIPS,Host-based Intrusion Prevention System
+139,HLD,Hardware Load Balancing Device
+529,HMAC,Hashed Message Authentication Code
+530,HOTP,HMAC-based One-Time Password
+531,HSM,Hardware Security Module
+355,HSPA,High Speed Packet Access
+004,HSRP,Hot Standby Router Protocol
+356,HT,High Throughput
+532,HTML,Hypertext Markup Language
+223,HTTP,Hypertext Transfer Protocol
+533,HTTPS,Hypertext Transfer Protocol over SSL / TLS
+357,HVAC,Heating Ventilation and Air Conditioning
+358,Hz,Hertz
+154,I/O,Input - Output
+077,IaaS,Infrastructure as a Service
+301,IANA,Internet Assigned Numbers Authority
+166,IB,Infiniband
+359,ICA,Independent Computer Architecture
+360,ICANN,Internet Corporation for Assigned Numbers and Names
+236,ICC,Integrated Circuit Card
+274,ICMP,Internet Control Message Protocol
+361,ICS,Internet Connection Sharing / Industrial Control System
+534,ID,Identification
+535,IDEA,International Data Encryption Algorithm
+195,IDF,Intermediate Distribution Frame
+536,IdP,Identity Provider
+140,IDS,Intrusion Detection System
+070,IEEE,Institute of Electrical and Electronics Engineers
+138,IETF,Internet Engineering Task Force
+272,IGMP,Internet Group Message Protocol
+362,IGP,Interior Gateway Protocol
+363,IGRP,Interior Gateway Routing Protocol
+537,IIS,Internet Information System
+364,IKE,Internet Key Exchange
+538,IM,Instant Messaging
+283,IMAP,Interactive Mail Access Protocol
+539,IMAP4,Internet Message Access Protocol v4
+087,IN,Internet
+365,InterNIC,Internet Network Information Center
+043,IoT,Internet of Things
+273,IP,Internet Protocol
+104,IPAM,IP Address Management
+141,IPS,Intrusion Prevention System
+144,IPSec,Internet Protocol Security
+090,IPv4,Internet Protocol Version Four
+091,IPv6,Internet Protocol Version Six
+277,IPX,Internetwork Packet Exchange
+540,IR,Incident Response / Infrared
+541,IRC,Internet Relay Chat
+542,IRP,Incident Response Plan
+366,IS-IS,Intermediate System to Intermediate System
+543,ISA,Interconnection Security Agreement
+367,ISAKMP,Internet Security Association and Key Management Protocol
+160,iSCSI,Internet Small Computer System Interface
+167,ISDN,Integrated Services Digital Network
+368,ISP,Internet Service Provider
+544,ISSO,Information Systems Security Officer
+198,IT,Information Technology
+545,ITCP,IT Contingency Plan
+369,ITS,Intelligent Transportation System
+024,IV,Initialization Vector
+055,KB,Kilobyte
+056,Kb,Kilobit
+057,Kbps,Kilobits Per Second
+546,KDC,Key Distribution Center
+547,KEK,Key Encryption Key
+370,KVM,Keyboard Video Mouse
+371,L2TP,Layer 2 Tunneling Protocol
+372,LACP,Link Aggregation Control Protocol
+035,LAN,Local Area Network
+115,LC,Lucent Connector / Local Connector
+186,LCP,Link Control Protocol
+096,LDAP,Lightweight Directory Access Protocol
+284,LDAPS,Lightwight Directory Access Protocol over Secure Sockets Layer (SSL)
+242,LEAP,Lightweight Extensible Authentication Protocol
+373,LEC,Local Exchange Carrier
+306,LED,Light Emitting Diode
+047,LF,Low Frequency
+286,LLC,Logical Link Control
+374,LLDP,Link Layer Discovery Protocol
+235,LP,Loss Prevention
+375,LSA,Link State Advertisements
+376,LTE,Long Term Evolution
+164,LUN,Logical Unit Number
+377,LWAPP,Lightweight Access Point Protocol
+548,MaaS,Monitoring as a Service / Monitoring as a Service
+549,MAC,Media Access Control / Mandatory Access Control / Message Authentication Code
+040,MAN,Metropolitan Area Network
+262,MAU,Medium Access Unit
+052,MB,Megabyte
+053,Mb,Megabit
+054,Mbps,Megabits Per Second
+379,MBps,Megabytes Per Second
+013,MBR,Master Boot Record
+016,MD4,Message Digest Four
+550,MD5,Message Digest 5
+196,MDF,Main Distribution Frame
+380,MDI,Media Dependent Interface
+381,MDIX,Media Dependent Interface Crossover
+226,MDM,Mobile Device Management
+239,MFA,Multi Factor Authentication
+551,MFD,Multi-function Device
+382,MGCP,Media Gateway Control Protocol
+050,MHz,Megahertz
+209,MIB,Management Information Base
+210,MiB,Mibibyte
+552,MIME,Multipurpose Internet Mail Exchange
+074,MIMO,Multiple Input Multiple Output
+006,MITM,Man In The Middle Attack
+383,MLA,Master License Agreement / Multilateral Agreement
+111,MMF,Multi Mode Fiber
+553,MMS,Multimedia Message Service
+384,MOA,Memorandum of Agreement
+554,MOTD,Message of the Day
+385,MOU,Memorandum of Understanding
+178,MPLS,Multi Protocol Label Switching
+199,MS,Microsoft
+386,MS-CHAP,Microsoft Challenge Handshake Authentication Protocol
+387,MSA,Master Service Agreement
+555,MSCHAP,Microsoft Challenge Handshake Authentication Protocol
+388,MSDS,Material Safety Data Sheet
+556,MSP,Managed Service Provider
+194,MTBF,Mean Time Between Failures
+118,MTRJ,Mechanical Transfer Registered Jack
+193,MTTF,Mean Time To Failure
+285,MTU,Maximum Transmission Unit
+071,MU MIMO,Multi User Multi Input Multi Output
+093,MX,Mail Exchange
+244,NAC,Network Access Control
+155,NAS,Network Attached Storage
+026,NAT,Network Address Translation
+390,NCP,Network Control Protocol
+228,NDA,Non Disclosure Agreement
+295,NDP,Neighbor Discovery Protocol
+391,NDR,Non Delivery Receipt
+392,NetBEUI,Network Basic Input/Output Extended User Interface
+393,NetBIOS,Network Basic Input/Output System
+259,NEXT,Near End Cross Talk
+038,NFC,Near Field Communication
+157,NFS,Network File Service
+557,NGAC,Next Generation Access Control
+149,NGFW,Next Generation Firewall
+394,NIC,Network Interface Card
+395,NIDS,Network Intrusion Detection System
+396,NIPS,Network Intrusion Prevention System
+011,NIST,National Institute of Standards and Technology
+190,NIU,Network Interface Unit
+397,nm,Nanometer
+398,NNTP,Network News Transport Protocol
+086,NS,Name Servers
+019,NSA,National Security Agency
+558,NTFS,New Technology File System
+559,NTLM,New Technology LAN Manager
+101,NTP,Network Time Protocol
+560,OAUTH,Open Authorization
+561,OCSP,Online Certificate Status Protocol
+171,OCx,Optical Carrier
+399,OID,Object Identifier
+400,OOB,Out Of Band
+204,OS,Operating System
+401,OSCP,Online Certificate Status Protocol
+134,OSI,Open Systems Interconnect
+075,OSINT,Open Source Intelligence
+028,OSPF,Open Shortest Path First
+562,OTA,Over The Air
+258,OTDR,Optical Time Domain Reflectometer
+402,OUI,Organizationally Unique Identifier
+563,OVAL,Open Vulnerability Assessment Language
+564,P12,PKCS #12
+565,P2P,Peer to Peer
+078,PaaS,Platform as a Service
+566,PAC,Proxy Auto Configuration
+567,PAM,Pluggable Authentication Modules
+039,PAN,Personal Area Network
+403,PAP,Password Authentication Protocol
+033,PAT,Port Address Translation
+568,PBKDF2,Password-based Key Derivation Function 2
+150,PBX,VOiP Private Branch Exchange
+232,PC,Personal Computer
+569,PCAP,Packet Capture
+404,PCM,Phase Change Memory
+065,PDC,Personal Digital Cellular
+003,PDoS,Permanent Denial of Service
+405,PDU,Protocol Data Unit
+243,PEAP,Protected Extensible Authentication Protocol
+570,PED,Personal Electronic Device
+571,PEM,Privacy-enhanced Electronic Mail
+572,PFS,Perfect Forward Secrecy
+573,PFX,Personal Exchange Format
+022,PGP,Pretty Good Privacy
+574,PHI,Personal Health Information
+575,PII,Personally Identifiable Information
+237,PIN,Personal Identification Number
+576,PIV,Personal Identity Verification
+225,PKI,Public Key Infrastructure
+406,PoE,Power Over Ethernet
+577,POODLE,Padding Oracle on Downgrade Legacy Encryption
+282,POP,Post Office Protocol
+407,POTS,Plain Old Telephone Service
+185,PPP,Point to Point Protocol
+187,PPPoE,Point to Point Protocol over Etheret
+408,PPTP,Point to Point Tunneling Protocol
+169,PRI,Primary Rate Interface
+252,PSK,Pre Shared Key
+132,PSTN,Public Switched Telephone Network
+234,PSU,Power Supply Unit
+278,PTP,Precision Time Protocol / Point To Point
+092,PTR,Pointer Records
+231,PTZ,Point Tilt Zoom
+409,PUA,Privileged User Agreement
+112,PVC,Polyvinyl Chloride / Permanent Virtual Circuit
+296,QoS,Quality of Service
+124,QSFP,Quad Small Form Pluggable
+578,RA,Recovery Agent / Registration Authority
+579,RAD,Rapid Application Development
+261,RADAR,Radio Detection and Ranging
+145,RADIUS,Remote Authentication Dial In User Service
+200,RAID,Redundant Array of Independent Disks
+233,RAM,Random Access Memory
+410,RARP,Reverse Address Resolution Protocol
+411,RAS,Remote Access Service
+580,RAT,Remote Access Trojan
+581,RBAC,Rule Based Access Control / Role Based Access Control
+249,RC4,Rivest Cipher Four
+218,RDC,Remote Desktop Connection
+213,RDP,Remote Desktop Protocol
+582,REST,Representational State Transfer
+412,RF,Radio Frequency
+084,RFC,Request for Comment/Change
+413,RFI,Radio Frequency Interference
+046,RFID,Radio Frequency Identification
+414,RFP,Request for Proposal
+415,RG,Radio Guide
+027,RIP,Routing Internet Protocol
+583,RIPEMD,RACE Integrity Primitives Evaluation Message Digest
+119,RJ,Registered Jack
+584,RMF,Risk Management Framework
+585,ROI,Return on Investment
+290,RPC,Remote Procedure Call
+203,RPO,Recovery Point Objective
+021,RSA,Rivest-Shamir-Adelman
+416,RSH,Remote Shell
+255,RSTP,Rapid Spanning Tree Protocol
+586,RTBH,Remotely Triggered Black Hole
+202,RTO,Recovery Time Objective
+587,RTOS,Real-time Operating System
+417,RTP,Real Time Transport Protocol
+275,RTSP,Real Time Streaming Protocol
+418,RTT,Round Trip Time / Real Transfer Time
+588,S/MIME,Secure / Multipurpose Internet Mail Extensions
+419,SA,Security Association
+079,SaaS,Software as a Service
+589,SAML,Security Assertions Markup Language
+042,SAN,Storage Area Network / Subject Alternative Name
+420,SC,Standard Connector / Subscriber Connector
+421,SCADA,System Control and Data Acquisition
+590,SCAP,Security Content Automation Protocol
+591,SCEP,Simple Certificate Enrollment Protocol
+220,SCP,Secure Copy Protocol
+161,SCSI,Small Computer System Interface
+592,SDK,Software Development Kit
+422,SDLC,Software Development Life Cycle
+593,SDLM,Software Development Life Cycle Methodology
+423,SDN,Software Defined Network
+424,SDP,Session Description Protocol
+174,SDSL,Symmetrical Digital Subscriber Line
+425,SECaaS,Security as a Service
+594,SED,Self-encrypting Drive
+595,SEH,Structured Exception Handler
+120,SFF,Small Form Factor
+121,SFP,Small Form Pluggable
+122,SFP+,Small Form Pluggable Plus
+279,SFTP,Secure Shell (SSH) File Transfer Protocol
+426,SGCP,Simple Gateway Control Protocol
+018,SHA,Secure Hash Algorithm
+596,SHTTP,Secure Hypertext Transfer Protocol
+207,SIEM,Security Information Event Management
+597,SIM,Subscriber Identity Module
+189,SIP,Session Initiation Protocol
+598,SIPS,Session Initiation Protocol Secure
+081,SLA,Service Level Agreement
+427,SLAAC,Stateless Address Auto Configuration
+599,SLE,Single Loss Expectancy
+428,SLIP,Serial Line Internet Protocol
+159,SMB,Server Message Block
+110,SMF,Single Mode Fiber
+429,SMS,Short Message Service
+281,SMTP,Simple Mail Transfer Protocol
+600,SMTPS,Simple Mail Transfer Protocol Secure
+430,SNAT,Static Network Address Translation / Source Network Address Translation
+208,SNMP,Simple Network Management Protocol
+276,SNP,Simple Network Protocol
+264,SNR,Signal to Noise Ratio
+431,SNTP,Simple Network Time Protocol
+080,SOA,Service Oriented Architecture / Start Of Authority
+601,SOAP,Simple Object Access Protocol
+602,SoC,System on Chip
+300,SOHO,Small Office / Home Office
+432,SONET,Synchronous Optical Network
+197,SOP,Standard Operating Procedures
+433,SOW,Statement Of Work
+434,SPB,Shortest Path Bridging
+097,SPF,Sender Policy Framework
+435,SPI,Stateful Packet Inspection
+603,SPIM,Spam over Internet Messaging
+604,SPoF,Single Point of Failure
+436,SPS,Standby Power Supply
+254,SPT,Spanning Tree Protocol
+605,SQL,Structured Query Language
+153,SRiOV,Single Root Input/Output Virtualization
+012,SRK,Storage Root Key
+606,SRTP,Secure Real-Time Protocol
+095,SRV,Service Locator Records
+206,SSD,Solid State Drive
+219,SSH,Secure Shell
+130,SSID,Service Set Identifier
+143,SSL,Secure Sockets Layer
+238,SSO,Single Sign On
+607,SSP,System Security Plan
+114,ST,Straight Tip / Snap Twist
+108,STP,Shielded Twisted Pair / Spanning Tree Protocol
+172,STS,Synchronous Transport Signal
+437,SVC,Switched Virtual Circuit
+287,SYN,Synchronization
+438,SYSLOG,System Log
+439,T1,Terrestrial Carrier Level 1
+440,TA,Terminal Adapter
+147,TACACS /+,Terminal Access Controller Access Control System
+608,TACACS+,Terminal Access Controller Access Control System Plus
+609,TCO,Total Cost of Ownership
+137,TCP,Transmission Control Protocol
+610,TCP/IP,Transmission Control Protocol / Internet Protocol
+182,TDM ,Time Division Multiplexing
+062,TDMA,Time Division Multiple Access
+441,TDR,Time Domain Refectometer
+442,Telco,Telecommunications Company
+269,TFTP,Trivial File Transfer Protocol
+611,TGT,Ticket Granting Ticket
+127,TIA/EIA,Telecommunications Industry Association / Electronic Industries Alliance
+248,TKIP,Temporal Key Integrity Protocol
+216,TLS,Transport Layer Security
+443,TMS,Transportation Management System
+266,TOR,The Onion Router
+299,ToS,Type of Service
+612,TOTP,Time-based One-time Password
+010,TPM,Trusted Platform Module
+613,TSIG,Transaction Signature
+085,TTL,Time To Live
+444,TTLS,Tunneled Transport Layer Security
+177,TV,Television
+094,TXT,Text (Record)
+614,UAT,User Acceptance Testing
+615,UAV,Unmanned Aerial Vehicle
+445,UC,Unified Communications
+136,UDP,User Datagram Protocol
+616,UEFI,Unified Extensible Firmware Interface
+049,UHF,Ultra High Frequency
+446,UNC,Universal Naming Convention
+116,UPC,Ultra Physical Contact / Ultra Polished Connector
+201,UPS,Uninterruptible Power Supply
+617,URI,Uniform Resource Identifier 
+151,URL,Uniform Resource Locator
+009,USB,Universal Serial Bus
+618,USB OTG,USB On The Go
+148,UTM,Unified Threat Management
+107,UTP,Unshielded Twisted Pair
+179,VC,Virtual Circuits
+307,VCSEL,Veritcal Cavity Surface Emitting Light
+619,VDE,Virtual Desktop Environment
+620,VDI,Virtual Desktop Infrastructure
+175,VDSL,Very High Bitrate Digital Subscriber Line / Variable Digital Subscriber Line
+106,VIPA,Virtual IP Address
+447,VLAN,Virtual Local Area Network
+448,VLSM,Variable Length Subnet Mask
+621,VM,Virtual Machine
+221,VNC,Virtual Network Connection
+152,VNIC,Virtual Network Interface Card
+131,VoIP,Voice Over IP
+076,VPN,Virtual Private Network
+449,VRF,Virtual Routing Forwarding
+450,VRRP,Virtual Router Redundancy Protocol
+451,VTC,Video Teleconference
+253,VTP,VLAN Trunking Protocol
+452,WAF,Web Application Firewall
+037,WAN,Wide Area Network
+129,WAP,Wireless Access Point / Wireless Application Protocol
+126,WDM,Wavelength Division Multiplexing
+246,WEP,Wired Equivalent Privacy
+622,WIDS,Wireless Intrusion Detection System
+005,WIPS,Wireless Intrusion Prevention System
+036,WLAN,Wireless Local Area Network
+453,WMS,Warehouse Management System
+623,WORM,Write Once Read Many
+247,WPA,Wifi Protected Access
+624,WPA2,WiFi Protected Access 2
+454,WPS,Wifi Protected Setup
+044,WSN,Wireless Sensor Network
+015,WSUS,Windows Server Update Services
+625,WTLS,Wireless TLS
+455,WWN,Worldwide Name
+456,XDSL,Extended Digital Subscriber Line
+457,XML,Extensible Markup Language
+626,XOR,Exclusive Or
+627,XSRF,Cross-site Request Forgery
+628,XSS,Cross-site Scripting
+458,Zeroconf,Zero Configuration
