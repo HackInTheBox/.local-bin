@@ -34,8 +34,8 @@ else
 fi
 
 
-echo $last_command
-exit
+#echo $last_command
+#exit
 linuxhash() {
    starttime=$(date +%s)
    while read n; do
