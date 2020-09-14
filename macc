@@ -1,119 +1,106 @@
 #!/bin/bash
-#macc
-#return current mac addresses of internet interfaces then
-#  change them to a random address from the same manufacturer
+# macc
+# CHANGE MAC ADDRESSES OF CURRENT INTERFACES
 
+
+#     Generate a valid random MAC address as $RANDMAC
+makerand() {
+   unset RANDMAC
+   APIECES=( 0 4 8 c d 2 3 6 7 a b e f 1 5 9 )
+   for i in $(seq 1 12); do
+      RANDMAC+="${APIECES[$(shuf -i 0-15 -n 1)]}"
+   done
+#     Change 2nd digit to [048c] and add semicolons 
+   RANDMAC=$(echo $RANDMAC | sed "s/./${APIECES[$(shuf -i 0-3 -n 1)]}/2" | sed -E 's/..\B/&:/g')
+   echo $RANDMAC
+}
 
 
 #######################################
-if [ "$SET_VARIABLES" == "true" ]; then
-   if [ -f $HOMEPATH/local/bin/ifexists ]; then
-      . ifexists rfkill
-      . ifexists ifconfig
-      . ifexists macchanger
-      . ifexists gcol
-   fi
-else
-   echo "Missing depends for the shell environment"
-   echo "Script may by wonky !"
-fi
+#     Set array variable to a list of interfaces excluding the loopback device
+setvar() {
+   IFLIST=($(ip -br a | grep -v 127.0.0.1 | cut -d ' ' -f 1))
+   OLDMACS=($(ip -br link | grep -v LOOPBACK | sed -E 's/\s+/\t/g' | cut -f 3))
+   IPLIST=($(ip -br a | grep -v 127.0.0.1 | sed -E 's/\s+/\t/g' | cut -f 3 | sed -E 's/\/.*//g'))
+   QTYLIST=$(ip -br a | grep -v 127.0.0.1 | wc -l)
+}
+setvar
 
 
-
-if [ "$(rfkill list | grep 'yes')" ]; then
-   . gcol red
-   echo -n "WARNING: "
-   . gcol white
-   echo -e "rfkill shows interfaces \neither hard-blocked or soft-blocked."
-   echo "Script may not run as intended."
-   . gcol yellow
-   rfkill -r | column -t | grep 'DEVICE'
-   . gcol white
-   rfkill -r | column -t | grep -v 'DEVICE'
-   echo; read -p "(C)ontinue as is? (A)bort Command? or (U)nblock All?  C|A|U " yesno
-   case $yesno in
-     C|c)
-            echo -e "Proceeding with MacChanged as is\n"
-            ;;
-     A|a)
-            echo "Aborting..."
-            exit 0
-            ;;
-     U|u)
-            echo -e "Running 'rfkill unblock all'...\n"
-            rfkill unblock all
-            . gcol yellow
-            rfkill -r | column -t | grep 'DEVICE'
-            . gcol white
-            rfkill -r | column -t | grep -v 'DEVICE'
-            ;;
-      *)
-            echo "Invalid choice.  Aborting."
-            exit 0
-            ;;
-    esac
+setarray() {
+   FLAG=0
+#     Change the mac addresses
+   for i in $(seq 0 $(($QTYLIST-1))); do
+      sudo ip link set ${IFLIST[$i]} down >/dev/null
+         if [ $? -ne 0 ]; then
+            echo "Error on set link down for ${IFLIST[$i]}" && FLAG=1
+         fi
+      sudo ip link set ${IFLIST[$i]} address $(makerand) >/dev/null
+         if [ $? -ne 0 ]; then
+            echo "Error changing hardware address for ${IFLIST[$i]}" && FLAG=1
+         fi
+      sudo ip link set ${IFLIST[$i]} up >/dev/null
+         if [ $? -ne 0 ]; then
+            echo "Error on set link up for ${IFLIST[$i]}" && FLAG=1
+         fi
+   done
    
-fi
+#     Get NEW mac addresses and store in array
+   NEWMACS=($(ip -br link | grep -v LOOPBACK | sed -E 's/\s+/\t/g' | cut -f 3))
+#     Put it altogether in one variable   
+   for i in $(seq 0 $(($QTYLIST-1))); do
+      IFARRAY[$i]=$(echo ${IFLIST[$i]} ${IPLIST[$i]} ${OLDMACS[$i]} ${NEWMACS[$i]})
+   done
+}
+setarray
 
-printlist() {
-#show current mac addresses for each interface
-ip -br a | awk '{ print $1 }' | while read line; do
-    . gcol navy
-    echo -e "Interface: $line"
-    . gcol white
-    macchanger -s $line 2>/dev/null | grep 'Current' | awk '{ print $1, " ", $2, " ", $3 }'
-   #macchanger -s $line 2>/dev/null | grep 'Current' | awk '{ printf $1; printf " "; printf $2; printf "  "; print $3 }'
-    if [ ! $? == 0 ]; then
-      "Could not return MAC Address."
-    fi
-done
+#  add spacer for visuals if there was an error previously
+if [ $FLAG -ne 0 ]; then echo; fi
+#     enumerate results
+enumerateresults() {
+#     Print column headers
+   echo "INTERFACE IP-ADDRESS OLD-MAC-ADDR NEW-MAC-ADDR"
+   for i in $(seq 0 $(($QTYLIST-1))); do 
+      echo ${IFARRAY[$i]}
+   done
 }
 
+#     print results
+enumerateresults | column -t
 
 #######################################
-. gcol green
-echo -e "\nstart:"
-. gcol white
-printlist | column -t
-. gcol red
-echo -e "\nauthorizing..."
-. gcol white
-sudo echo ""
-. gcol green
-echo -n "spoofing..."
-. gcol white
+# FOR DEVELOPMENT
+sixbysix() {  
+   COUNT=-1
+   APIECES=( 0 1 2 3 4 5 6 7 8 9 a b c d e f )
+   for i in $(seq 0 15); do
+      for j in $(seq 0 15); do
+         ((COUNT++))
+         STRING[$COUNT]="${APIECES[i]}${APIECES[j]}"
+       done
+   done
+}
 
-spoofer() {
-ip -br a | awk '{ print $1 }' | while read line; do
-    . gcol yellow
-    echo -e "\nInterface:    $line"
-    . gcol white
-    sudo ifconfig "$line" down 2>/dev/null
-    unset previous_step
-    sudo macchanger -e $line 2>/dev/null | awk '{ print $1, " ", $2, " ", $3 }' | while read steps; do
-        if [ "$steps" == "Network didn't change" ]; then
-            . gcol red
-            # waiting for this error to pop back up so i can finish the script!!
-            echo "Error! Network didn't actually change the MAC address!"
-            . gcol white
-        else
-            echo "$steps"
-        fi
-    done
-    sudo ifconfig "$line" up 2>/dev/null
+converit() {
+   for i in $(seq 0 255); do
+      BIN=$(echo "obase=2; ibase=16; ${STRING[$i]^^}" | bc)
+         for j in $(seq 0 $((8-$(echo $BIN | wc -c)))); do
+            echo -n 0
+         done
+      echo $BIN ${STRING[$i]} 
+   done
+
+}  
+
+checkit() {
+cat hexconversions | while read digit; do
+   if [ $(echo $digit | cut -c 7) -eq 1 ]; then
+      echo $digit 
+   else
+      echo $digit valid
+   fi
 done
 }
 
-spoofer | column -t
-. gcol green
-echo -e "\nNew Mac Address"
-. gcol white
-printlist | column -t
-. gcol blue
-echo "MACCHANGED!"
-echo -e "\n"
-. gcol white
-
-exit 0
 
 
